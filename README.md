@@ -14,7 +14,7 @@
 > 물리적 설계 : https://www.erdcloud.com/p/7yHt49AXZQTWjmQfR
 >
 
-<img src="https://github.com/KONKUK-MAP-Service/KU-MAP-Server/assets/58305106/855223eb-8f4d-419b-b1c2-9dcbf7ad772e" width="400" height="300">
+<img src="https://github.com/ulsandonghun/JPA-Basic/assets/58305106/2c114340-3440-4b95-958e-1712634a5ab4" width="700" height="300">
 
 <br>  
 
