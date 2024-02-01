@@ -44,5 +44,5 @@ public class Spot extends BaseEntity {
     private String latitude;
     private String review;
 
-    private Long like;
+    private Long likes;
 }

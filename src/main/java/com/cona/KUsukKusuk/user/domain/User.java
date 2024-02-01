@@ -14,7 +14,7 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "user")
 public class User extends BaseEntity {
 
     @Id
