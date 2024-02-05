@@ -12,7 +12,6 @@ public class Health {
     @GetMapping("/health")
     public HttpResponse<HealthResponse> healthCheck() {
 
-        return new HttpResponse<>(HttpStatus.OK,
-                HealthResponse.from("HTTP 상태 정상"));
+        return HttpResponse.okBuild(HealthResponse.from("HTTP 상태 정상"));
     }
 }
