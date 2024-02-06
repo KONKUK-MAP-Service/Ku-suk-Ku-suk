@@ -21,8 +21,7 @@ public class UserController {
 
     @PostMapping("/join")
     public HttpResponse<UserJoinResponse> join(@Valid @RequestBody UserJoinRequest userJoinRequest) {
-        User user = userJoinRequest.toEntity();
-        User savedUser = userService.save(user);
+        User savedUser = userService.save(userJoinRequest);
         return HttpResponse.okBuild(
                 UserJoinResponse.of(savedUser)
         );
