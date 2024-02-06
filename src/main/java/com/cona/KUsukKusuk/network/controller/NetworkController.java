@@ -1,6 +1,6 @@
-package com.cona.KUsukKusuk.global.controller;
+package com.cona.KUsukKusuk.network.controller;
 
-import com.cona.KUsukKusuk.global.dto.HealthResponse;
+import com.cona.KUsukKusuk.network.dto.HealthResponse;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;

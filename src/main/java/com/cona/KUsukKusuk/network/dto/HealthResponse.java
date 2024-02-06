@@ -1,4 +1,4 @@
-package com.cona.KUsukKusuk.global.dto;
+package com.cona.KUsukKusuk.network.dto;
 
 import lombok.Builder;
 

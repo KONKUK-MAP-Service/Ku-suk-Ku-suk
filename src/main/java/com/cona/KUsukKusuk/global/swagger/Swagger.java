@@ -1,4 +1,4 @@
-package com.cona.KUsukKusuk.global.config;
+package com.cona.KUsukKusuk.global.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
