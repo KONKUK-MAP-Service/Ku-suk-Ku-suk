@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.user.dto;
 
+import com.cona.KUsukKusuk.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,5 +20,13 @@ public record UserJoinRequest(
         String nickname
 )
 {
+        public User toEntity() {
+                return User.builder()
+                        .userId(userId)
+                        .password(password)
+                        .email(email)
+                        .nickname(nickname)
+                        .build();
+        }
 
 }

@@ -13,8 +13,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity(name = "user")
+@Builder
+@Getter
 public class User extends BaseEntity {
 
     @Id

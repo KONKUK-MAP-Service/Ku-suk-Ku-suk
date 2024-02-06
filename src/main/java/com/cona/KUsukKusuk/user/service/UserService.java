@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.user.service;
 
+import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    public void save() {
-
+    public User save(User user) {
+        User savedUser = userRepository.save(user);
+        return savedUser;
     }
 
 }
