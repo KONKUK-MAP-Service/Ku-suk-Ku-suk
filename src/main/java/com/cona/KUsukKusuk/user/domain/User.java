@@ -22,13 +22,14 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private String userId;
 
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = true)
     private String email;
+    @Column(nullable = false)
+    private String nickname;
 
     @OneToMany(mappedBy = "user")
    private List<Bookmark> bookmarks = new ArrayList<>();
