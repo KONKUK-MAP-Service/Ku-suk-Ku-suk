@@ -50,7 +50,7 @@ public class UserControllerTest extends RestDocsTest {
     private UserService userService;
 
     @Test
-    @DisplayName("회원가입시 필수항목 null시 예외를 던진다")
+    @DisplayName("회원가입시 필수항목 null시 커스텀예외를 던진다")
     void join_exception_Test() throws Exception {
         //given
         UserJoinRequest userJoinRequest
