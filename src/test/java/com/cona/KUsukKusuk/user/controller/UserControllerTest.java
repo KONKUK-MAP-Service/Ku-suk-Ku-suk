@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.cona.KUsukKusuk.fixture.UserFixture;
 import com.cona.KUsukKusuk.support.RestDocsTest;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
@@ -75,15 +76,9 @@ public class UserControllerTest extends RestDocsTest {
     void join() throws Exception {
         //given
         UserJoinRequest userJoinRequest
-                = new UserJoinRequest("최동훈", "vdongv1620", "email", "최동훈");
+                = new UserJoinRequest("konkuk", "vdongv1620", "donghoon141@naver.com", "최동훈");
 
-        User mockUser = User.builder()
-                .id(1L)
-                .userId("최동훈")
-                .password("vdongv1620")
-                .email("email")
-                .nickname("최동훈")
-                .build();
+        User mockUser = UserFixture.DEFAULT.getUser();
 
         BDDMockito.given(userService.save(userJoinRequest)).willReturn(mockUser);
 
@@ -100,9 +95,9 @@ public class UserControllerTest extends RestDocsTest {
         //then
         perform.andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.id").value(1L))
-                .andExpect(jsonPath("$.results.userid").value("최동훈"))
+                .andExpect(jsonPath("$.results.userid").value("konkuk"))
                 .andExpect(jsonPath("$.results.password").value("vdongv1620"))
-                .andExpect(jsonPath("$.results.email").value("email"))
+                .andExpect(jsonPath("$.results.email").value("donghoon141@naver.com"))
                 .andExpect(jsonPath("$.results.nickname").value("최동훈"));
 
 
