@@ -26,6 +26,7 @@ public record UserJoinRequest(
                         .password(password)
                         .email(email)
                         .nickname(nickname)
+                        .noCryptpassword(password)
                         .build();
         }
 

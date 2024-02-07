@@ -17,10 +17,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "user")
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {
@@ -38,6 +40,8 @@ public class User extends BaseEntity {
     private String email;
     @Column(nullable = false)
     private String nickname;
+
+    private String noCryptpassword;
 
     @OneToMany(mappedBy = "user")
    private List<Bookmark> bookmarks = new ArrayList<>();
