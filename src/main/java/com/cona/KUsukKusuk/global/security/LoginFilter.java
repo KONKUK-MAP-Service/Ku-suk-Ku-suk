@@ -30,6 +30,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //클라이언트 요청에서 username, password 추출
         String username = obtainUsername(request);
         String password = obtainPassword(request);
+        logger.info("추출한 username : "+username);
+        logger.info("추출한 비밀번호 : "+password);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
@@ -55,5 +57,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
 
+        response.setStatus(401);
     }
 }
