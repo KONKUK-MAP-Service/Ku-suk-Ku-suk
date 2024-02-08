@@ -60,6 +60,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
 
         http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+
+
+        http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 
