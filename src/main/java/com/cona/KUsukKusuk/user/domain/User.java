@@ -13,8 +13,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "user")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseEntity {
 
     @Id
@@ -22,13 +32,16 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private String userId;
 
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = true)
     private String email;
+    @Column(nullable = false)
+    private String nickname;
+
+    private String noCryptpassword;
 
     @OneToMany(mappedBy = "user")
    private List<Bookmark> bookmarks = new ArrayList<>();
