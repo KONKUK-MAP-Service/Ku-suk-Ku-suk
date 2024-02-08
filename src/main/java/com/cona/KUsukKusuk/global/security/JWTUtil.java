@@ -44,4 +44,15 @@ public class JWTUtil {
                 .signWith(secretKey)
                 .compact();
     }
+    public String createRefreshToken(String userid, String password, Long expiredMs) {
+
+        return Jwts.builder()
+                .claim("userid", userid)
+                .claim("password", password)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .signWith(secretKey)
+                .compact();
+    }
+
 }
