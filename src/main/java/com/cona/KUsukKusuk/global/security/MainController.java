@@ -18,13 +18,8 @@ public class MainController {
     public String main() {
         String username= SecurityContextHolder.getContext().getAuthentication()
                 .getName();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority();
 
 
-        return "현재 접속자명 : "+username + "접속자 비밀번호 : "+role;
+        return "현재 접속자 아이디 : "+username;
     }
 }
