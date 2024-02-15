@@ -48,10 +48,10 @@ public class UserService {
     }
 
     private String addToBlacklist(String encryptedRefreshToken) {
-        String blacklistKey = "refreshTokenBlacklist:" + encryptedRefreshToken;
+        String blacklistKey = encryptedRefreshToken;
 
         redisService.setValues(blacklistKey,"blacklist");
-        return "blaklist"+redisService.getValues(blacklistKey);
+        return "blaklist "+blacklistKey;
     }
 
 

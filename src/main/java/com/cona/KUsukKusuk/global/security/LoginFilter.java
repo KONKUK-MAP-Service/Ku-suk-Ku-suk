@@ -16,15 +16,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
-@Component
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
     private final JWTUtil jwtUtil;
 
-    @Autowired
-    private RedisService redisService;
 
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
 
@@ -61,8 +58,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //RT : 7일
         String refreshToken = jwtUtil.createRefreshToken(username, password, 86400000*7L);
 
-        // redis에 RT저장
-        redisService.setValues(username,refreshToken);
 
         response.addHeader("Authorization", "Bearer " + accessToken);
         response.addHeader("RefreshToken","Bearer "+refreshToken);

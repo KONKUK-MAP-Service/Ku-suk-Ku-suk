@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.global.security;
 
+import com.cona.KUsukKusuk.global.redis.RedisService;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +26,7 @@ public class JWTUtil {
     public static final String BEARER_PREFIX = "Bearer ";
 
     @Autowired
-    private  RedisTemplate<String, String> redisTemplate;
+    private RedisService redisService;
     private SecretKey secretKey;
 
     public JWTUtil(@Value("${spring.jwt.secret}")String secret) {
@@ -70,6 +71,9 @@ public class JWTUtil {
                 .signWith(secretKey)
                 .compact();
 
+        // redis에 RT저장
+        redisService.setValues(userid,refreshToken);
+
         return refreshToken;
     }
     // Request Header에 Access Token 정보를 추출하는 메서드
@@ -85,7 +89,7 @@ public class JWTUtil {
     public String getRefreshToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(REFRESH_HEADER);
         if (StringUtils.hasText(bearerToken)) {
-            return bearerToken;
+            return bearerToken.substring(7);
         }
         return null;
     }
