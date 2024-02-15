@@ -83,7 +83,7 @@ public class JWTUtil {
         return refreshToken;
     }
     // Request Header에 Access Token 정보를 추출하는 메서드
-    public String resolveAccessToken(HttpServletRequest request) {
+    public String getAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
@@ -92,7 +92,7 @@ public class JWTUtil {
     }
 
     // Request Header에 Refresh Token 정보를 추출하는 메서드
-    public String resolveRefreshToken(HttpServletRequest request) {
+    public String getRefreshToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(REFRESH_HEADER);
         if (StringUtils.hasText(bearerToken)) {
             return bearerToken;
