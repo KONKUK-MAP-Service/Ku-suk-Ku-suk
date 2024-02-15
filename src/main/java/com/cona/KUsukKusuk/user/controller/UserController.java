@@ -5,12 +5,14 @@ import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinResponse;
+import com.cona.KUsukKusuk.user.dto.UserLogoutResponse;
 import com.cona.KUsukKusuk.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,11 +35,16 @@ public class UserController {
         );
     }
     @PatchMapping("/logout")
-    public HttpResponse logout(HttpServletRequest request) {
+    public HttpResponse<UserLogoutResponse> logout(HttpServletRequest request) {
+
+        String username= SecurityContextHolder.getContext().getAuthentication()
+                .getName();
         String encryptedRefreshToken = jwtUtil.getRefreshToken(request);
         String accessToken = jwtUtil.getAccessToken(request);
-        userService.logout(encryptedRefreshToken, accessToken);
+        String blacklist = userService.logout(encryptedRefreshToken, accessToken);
 
-        return new ResponseEntity<>(new SingleResponseDto<>("Logged out successfully"), HttpStatus.NO_CONTENT);
+        return HttpResponse.okBuild(
+                UserLogoutResponse.from(username,blacklist)
+        );
     }
 }
