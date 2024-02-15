@@ -1,16 +1,22 @@
 package com.cona.KUsukKusuk.global.exception.custom.security;
 
-import com.cona.KUsukKusuk.global.exception.ApplicationException;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 
-public class SecurityJwtNotFoundException extends ApplicationException {
+@Getter
+@Setter
+@Slf4j
+public class SecurityJwtNotFoundException extends RuntimeException {
+    private final HttpStatus httpStatus;
     public SecurityJwtNotFoundException(HttpExceptionCode exceptionCode) {
-        super(exceptionCode);
+        super(exceptionCode.getMessage());
+        this.httpStatus=exceptionCode.getHttpStatus();
     }
 
-    public SecurityJwtNotFoundException(HttpExceptionCode exceptionCode, String exceptionMessage) {
-        super(exceptionCode, exceptionMessage);
-    }
+
     public SecurityJwtNotFoundException(){
         this(HttpExceptionCode.JWT_NOT_FOUND);}
 }
