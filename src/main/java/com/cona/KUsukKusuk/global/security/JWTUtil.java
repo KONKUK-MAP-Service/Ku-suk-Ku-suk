@@ -1,6 +1,7 @@
 package com.cona.KUsukKusuk.global.security;
 
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
@@ -14,9 +15,14 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class JWTUtil {
+    public static final String BEARER_TYPE = "Bearer";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_HEADER = "RefreshToken";
+    public static final String BEARER_PREFIX = "Bearer ";
 
     @Autowired
     private  RedisTemplate<String, String> redisTemplate;
@@ -75,6 +81,23 @@ public class JWTUtil {
 
 
         return refreshToken;
+    }
+    // Request Header에 Access Token 정보를 추출하는 메서드
+    public String resolveAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    // Request Header에 Refresh Token 정보를 추출하는 메서드
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(REFRESH_HEADER);
+        if (StringUtils.hasText(bearerToken)) {
+            return bearerToken;
+        }
+        return null;
     }
 
 }
