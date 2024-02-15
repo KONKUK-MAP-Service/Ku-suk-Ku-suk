@@ -70,16 +70,6 @@ public class JWTUtil {
                 .signWith(secretKey)
                 .compact();
 
-        // redis에 저장
-        redisTemplate.opsForValue().set(
-                userid,
-                refreshToken,
-                expiredMs,
-                TimeUnit.MILLISECONDS
-        );
-
-
-
         return refreshToken;
     }
     // Request Header에 Access Token 정보를 추출하는 메서드
