@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.user.service;
 
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
+import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
@@ -21,7 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisService redisService;
     private final JWTUtil jwtUtil;
 
     public User save(UserJoinRequest userJoinRequest) {
@@ -32,10 +33,11 @@ public class UserService {
         return savedUser;
     }
 
-    public void logout(String encryptedRefreshToken, String accessToken) {
+    public String logout(String encryptedRefreshToken, String accessToken) {
         this.verifiedRefreshToken(encryptedRefreshToken);
 
-        addToBlacklist(encryptedRefreshToken);
+        String result = addToBlacklist(encryptedRefreshToken);
+        return result;
 
     }
 
@@ -45,11 +47,11 @@ public class UserService {
         }
     }
 
-    private void addToBlacklist(String encryptedRefreshToken) {
+    private String addToBlacklist(String encryptedRefreshToken) {
         String blacklistKey = "refreshTokenBlacklist:" + encryptedRefreshToken;
 
-        redisTemplate.opsForValue().set(blacklistKey, "blacklisted");
-        return redisTemplate.opsForValue().g
+        redisService.setValues(blacklistKey,"blacklist");
+        return "blaklist"+redisService.getValues(blacklistKey);
     }
 
 
