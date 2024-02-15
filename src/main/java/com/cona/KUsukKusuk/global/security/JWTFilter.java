@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.global.security;
 
+import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.user.domain.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,11 +28,10 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization= request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-
             System.out.println("token null");
             filterChain.doFilter(request, response);
-
             return;
+
         }
 
         System.out.println("authorization now");

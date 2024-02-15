@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class SecurityExceptionHandler {
 
     @ExceptionHandler(SecurityJwtNotFoundException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public HttpResponse<ErrorResponse> securityExceptionHandler(SecurityJwtNotFoundException e) {
-        log.warn("SpotifyErrorException: {}", e);
         return HttpResponse.status(e.getHttpStatus())
                 .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
 

@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining());
 
-        return HttpResponse.status((HttpStatus) e.getStatusCode())
+        return HttpResponse.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.from(HttpExceptionCode.UNEXPECTED_EXCEPTION.getHttpStatus(), errorMessage));
     }
 
