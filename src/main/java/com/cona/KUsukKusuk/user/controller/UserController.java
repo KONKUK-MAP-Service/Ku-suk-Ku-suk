@@ -33,7 +33,7 @@ public class UserController {
         );
     }
     @PatchMapping("/logout")
-    public ResponseEntity logout(HttpServletRequest request) {
+    public HttpResponse logout(HttpServletRequest request) {
         String encryptedRefreshToken = jwtUtil.getRefreshToken(request);
         String accessToken = jwtUtil.getAccessToken(request);
         userService.logout(encryptedRefreshToken, accessToken);

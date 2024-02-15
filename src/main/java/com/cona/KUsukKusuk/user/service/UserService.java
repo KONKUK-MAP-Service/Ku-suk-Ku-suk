@@ -2,12 +2,16 @@ package com.cona.KUsukKusuk.user.service;
 
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
+import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final RedisTemplate<String, String> redisTemplate;
+    private final JWTUtil jwtUtil;
 
     public User save(UserJoinRequest userJoinRequest) {
         User user = userJoinRequest.toEntity();
@@ -28,6 +35,8 @@ public class UserService {
     public void logout(String encryptedRefreshToken, String accessToken) {
         this.verifiedRefreshToken(encryptedRefreshToken);
 
+        addToBlacklist(encryptedRefreshToken);
+
     }
 
     private void verifiedRefreshToken(String encryptedRefreshToken) {
@@ -36,6 +45,12 @@ public class UserService {
         }
     }
 
+    private void addToBlacklist(String encryptedRefreshToken) {
+        String blacklistKey = "refreshTokenBlacklist:" + encryptedRefreshToken;
+
+        redisTemplate.opsForValue().set(blacklistKey, "blacklisted");
+        return redisTemplate.opsForValue().g
+    }
 
 
 }
