@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining());
 
         return HttpResponse.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.from(HttpExceptionCode.UNEXPECTED_EXCEPTION.getHttpStatus(), errorMessage));
+                .body(ErrorResponse.from(HttpExceptionCode.INVALID_ARGUMENT.getHttpStatus(), errorMessage));
     }
 
 }
