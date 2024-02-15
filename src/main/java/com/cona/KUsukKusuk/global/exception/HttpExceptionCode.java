@@ -25,7 +25,11 @@ public enum HttpExceptionCode {
     JWT_UNSUPPORTED(HttpStatus.UNAUTHORIZED,  "지원되지 않는 JWT 입니다."),
     JWT_INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED,  "signature가 유효하지 않습니다."),
     JWT_NOT_FOUND(HttpStatus.UNAUTHORIZED, "JWT를 찾을 수 없습니다."),
-    ID_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND,  "authToken에서 idToken을 찾을 수 없습니다.");
+    ID_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND,  "authToken에서 idToken을 찾을 수 없습니다."),
+
+    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST,  "올바르지 않은 값이 전달되었습니다.");
+
+
 
 
     private final HttpStatus httpStatus;

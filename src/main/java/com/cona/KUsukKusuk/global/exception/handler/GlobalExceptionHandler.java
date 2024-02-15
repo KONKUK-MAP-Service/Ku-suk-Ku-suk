@@ -1,5 +1,8 @@
 package com.cona.KUsukKusuk.global.exception.handler;
 
+import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
+import com.cona.KUsukKusuk.global.exception.custom.BuisnessException.BusinessException;
+import com.cona.KUsukKusuk.global.response.ErrorResponse;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -20,20 +23,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public HttpResponse<ErrorResponseDto> businessExceptionHandle(BusinessException e) {
+    public HttpResponse<ErrorResponse> businessExceptionHandle(BusinessException e) {
         log.warn("businessException : {}", e);
         return HttpResponse.status(e.getHttpStatus())
-                .body(ErrorResponseDto.from(e.getHttpStatus(), e.getMessage()));
+                .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> allUncaughtHandle(Exception e) {
+    public ResponseEntity<ErrorResponse> allUncaughtHandle(Exception e) {
         log.error("allUncaughtHandle : {}", e);
         return ResponseEntity.internalServerError().build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<ErrorResponseDto> methodArgumentNotValidExceptionHandle(MethodArgumentNotValidException e) {
+    protected HttpResponse<ErrorResponse> methodArgumentNotValidExceptionHandle(MethodArgumentNotValidException e) {
         log.error("methodArgumentNotValidException : {}", e);
 
         BindingResult bindingResult = e.getBindingResult();
@@ -43,8 +46,8 @@ public class GlobalExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining());
 
-        return ResponseEntity.badRequest()
-                .body(ErrorResponseDto.from(HttpExceptionCode.INVALID_ARGUMENT.getHttpStatus(), errorMessage));
+        return HttpResponse.status((HttpStatus) e.getStatusCode())
+                .body(ErrorResponse.from(HttpExceptionCode.UNEXPECTED_EXCEPTION.getHttpStatus(), errorMessage));
     }
 
 }

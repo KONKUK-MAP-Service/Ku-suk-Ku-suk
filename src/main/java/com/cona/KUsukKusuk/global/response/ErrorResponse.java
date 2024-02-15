@@ -12,4 +12,10 @@ public record ErrorResponse (HttpStatus errorCode,String message){
     public static ErrorResponse from(HttpExceptionCode exceptionCode, String errorMessage) {
         return new ErrorResponse(exceptionCode.getHttpStatus(), errorMessage);
     }
+
+    public static ErrorResponse from(HttpStatus httpStatus, String errorMessage) {
+        return new ErrorResponse(httpStatus, errorMessage);
+    }
+
+
 }
