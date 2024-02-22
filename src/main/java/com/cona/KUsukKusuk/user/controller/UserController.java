@@ -53,7 +53,7 @@ public class UserController {
     @PostMapping("/refresh")
     @Operation(summary = "토큰 갱신", description = "만료된 AccessToken을 RefreshToken을 사용해 갱신합니다.")
     public HttpResponse<TokenRefreshResponse> refreshToken(@RequestBody TokenRefreshRequest refreshRequest) {
-        String newAccessToken = userService.refreshToken(refreshRequest.getRefreshToken());
+        String newAccessToken = userService.refreshToken(refreshRequest.getAccessToken());
         return HttpResponse.okBuild(
                 TokenRefreshResponse.of(newAccessToken)
         );

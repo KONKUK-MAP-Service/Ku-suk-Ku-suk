@@ -1,5 +1,8 @@
 package com.cona.KUsukKusuk.user.dto;
 
-public record TokenRefreshRequest(String refreshToken) {
+import lombok.Getter;
+
+@Getter
+public record TokenRefreshRequest(String accessToken) {
 
 }
