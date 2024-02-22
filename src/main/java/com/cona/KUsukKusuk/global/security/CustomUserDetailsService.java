@@ -1,6 +1,7 @@
 package com.cona.KUsukKusuk.global.security;
 
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,13 +20,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUserId(username);
+        User user = userRepository.findByUserId(username)
+                .orElseThrow(()-> new UserNotFoundException());
 
-        if (user != null) {
 
-            return new CustomUserDetails(user);
-        }
 
-        return null;
+        return new CustomUserDetails(user);
+
+
     }
 }
