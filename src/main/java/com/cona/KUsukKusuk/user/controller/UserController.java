@@ -31,7 +31,7 @@ public class UserController {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/join")
-    @Operation(summary = "토큰 갱신", description = "만료된 AccessToken을 RefreshToken을 사용해 갱신합니다.")
+    @Operation(summary = "회원가입", description = "회원가입을 수행합니다.")
 
     public HttpResponse<UserJoinResponse> join(@Valid @RequestBody UserJoinRequest userJoinRequest) {
         User savedUser = userService.save(userJoinRequest);
