@@ -70,6 +70,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             throws IOException {
 
         response.getWriter().write("해당 사용자의 아이디나 비밀번호가 옳지 않습니다. 다시 확인해주세요");
-        response.setStatus(401);
+        response.setStatus(400);
     }
 }
