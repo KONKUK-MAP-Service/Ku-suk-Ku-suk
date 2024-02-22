@@ -4,6 +4,7 @@ import com.cona.KUsukKusuk.global.redis.RedisService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
@@ -65,8 +66,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
+            throws IOException {
 
+        response.getWriter().write("해당 사용자의 아이디나 비밀번호가 옳지 않습니다. 다시 확인해주세요");
         response.setStatus(401);
     }
 }
