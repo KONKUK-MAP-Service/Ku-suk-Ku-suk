@@ -19,8 +19,8 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${redis_host}
+      port: ${redis_port}
 
 logging:
   level:

@@ -39,6 +39,9 @@ jobs:
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
           spring.datasource.driver-class-name: ${{ secrets.DB_DRIVER }}
           spring.jwt.secret: ${{ secrets.JWT_SECRET }}
+          spring.data.redis.host: ${{secrets.REDIS_HOST}}
+          spring.data.redis.port: ${{secrets.REDIS_PORT}}
+
 
       #gradlew 실행을 위한 권한 추가
 
