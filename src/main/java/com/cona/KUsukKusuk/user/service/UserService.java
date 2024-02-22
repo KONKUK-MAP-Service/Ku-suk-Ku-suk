@@ -57,11 +57,13 @@ public class UserService {
     }
     public String refreshToken(String encryptedRefreshToken) {
 
-        String userId = redisService.getValues(encryptedRefreshToken);
-        if (userId == null) {
+        if (encryptedRefreshToken == null) {
             throw new RefreshTokenNotFoundException();
         }
+        String userId = redisService.getValues(encryptedRefreshToken);
+        System.out.println("현재 검색된 userId:"+userId);
         User user = userRepository.findByUserId(userId);
+
         if (user == null) {
             throw new UserNotFoundException();
         }
