@@ -6,13 +6,9 @@ import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
+import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
-import io.jsonwebtoken.Claims;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,24 +30,49 @@ public class UserService {
     }
 
     public String logout(String encryptedRefreshToken, String accessToken) {
-        this.verifiedRefreshToken(encryptedRefreshToken);
+        this.isTokenPresent(encryptedRefreshToken);
 
         String result = addToBlacklist(encryptedRefreshToken);
         return result;
 
     }
 
-    private void verifiedRefreshToken(String encryptedRefreshToken) {
-        if (encryptedRefreshToken == null) {
-            throw new SecurityJwtNotFoundException(HttpExceptionCode.JWT_NOT_FOUND);
-        }
-    }
 
     private String addToBlacklist(String encryptedRefreshToken) {
         String blacklistKey = encryptedRefreshToken;
 
-        redisService.setValues(blacklistKey,"blacklist");
-        return "blaklist "+blacklistKey;
+        redisService.setValues(blacklistKey, "blacklist");
+        return "blaklist " + blacklistKey;
+    }
+
+    public String refreshToken(String encryptedRefreshToken) {
+        isTokenPresent(encryptedRefreshToken);
+        //앞의 Bearer 삭제후 순수 RT 추출
+        String pureRefreshToken = getBearerSubstring(encryptedRefreshToken);
+        //redis에서 해당 키 검색해서 해당 토큰에 대응하는 key 추출
+        String userId = redisService.getValues(pureRefreshToken);
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        //jwt 생성
+        String newAccessToken = getAccessToken(user);
+
+        return "Bearer " + newAccessToken;
+    }
+
+    private String getAccessToken( User user) {
+        return jwtUtil.createJwt(user.getUserId(), user.getPassword(), 86400000 * 7L);
+    }
+
+    private static String getBearerSubstring(String encryptedRefreshToken) {
+        return encryptedRefreshToken.substring(7);
+    }
+
+    private void isTokenPresent(String encryptedRefreshToken) {
+        if (encryptedRefreshToken == null) {
+            throw new SecurityJwtNotFoundException(HttpExceptionCode.JWT_NOT_FOUND);
+        }
     }
 
 

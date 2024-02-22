@@ -54,7 +54,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/users/login", "/users/join","/health").permitAll()
+                        .requestMatchers("/login", "/users/join","/health","/","/users/refresh").permitAll()
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         //스웨거 접근권한 허용
                         .anyRequest().authenticated());

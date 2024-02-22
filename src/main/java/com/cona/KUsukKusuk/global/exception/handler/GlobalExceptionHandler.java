@@ -4,6 +4,7 @@ import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.exception.custom.BuisnessException.BusinessException;
 import com.cona.KUsukKusuk.global.response.ErrorResponse;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
+import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE)
+
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -30,11 +32,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> allUncaughtHandle(Exception e) {
+    public ResponseEntity<String> allUncaughtHandle(Exception e) {
         log.error("allUncaughtHandle : {}", e);
-        return ResponseEntity.internalServerError().build();
+        return ResponseEntity.internalServerError().body(e.getMessage());
     }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected HttpResponse<ErrorResponse> methodArgumentNotValidExceptionHandle(MethodArgumentNotValidException e) {
         log.error("methodArgumentNotValidException : {}", e);

@@ -1,6 +1,7 @@
 package com.cona.KUsukKusuk.global.security;
 
 import com.cona.KUsukKusuk.global.redis.RedisService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
@@ -72,7 +73,7 @@ public class JWTUtil {
                 .compact();
 
         // redis에 RT저장
-        redisService.setValues(userid,refreshToken);
+        redisService.setValues(refreshToken,userid);
 
         return refreshToken;
     }
@@ -93,5 +94,6 @@ public class JWTUtil {
         }
         return null;
     }
+
 
 }

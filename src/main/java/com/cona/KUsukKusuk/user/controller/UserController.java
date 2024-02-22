@@ -3,10 +3,13 @@ package com.cona.KUsukKusuk.user.controller;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.TokenRefreshRequest;
+import com.cona.KUsukKusuk.user.dto.TokenRefreshResponse;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinResponse;
 import com.cona.KUsukKusuk.user.dto.UserLogoutResponse;
 import com.cona.KUsukKusuk.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,8 @@ public class UserController {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/join")
+    @Operation(summary = "회원가입", description = "회원가입을 수행합니다.")
+
     public HttpResponse<UserJoinResponse> join(@Valid @RequestBody UserJoinRequest userJoinRequest) {
         User savedUser = userService.save(userJoinRequest);
         return HttpResponse.okBuild(
@@ -35,6 +40,8 @@ public class UserController {
         );
     }
     @PatchMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃을 요청하여 RfreshToken을 블랙처리 합니다.")
+
     public HttpResponse<UserLogoutResponse> logout(HttpServletRequest request) {
 
         String username= SecurityContextHolder.getContext().getAuthentication()
@@ -45,6 +52,14 @@ public class UserController {
 
         return HttpResponse.okBuild(
                 UserLogoutResponse.from(username,blacklist)
+        );
+    }
+    @PostMapping("/refresh")
+    @Operation(summary = "토큰 갱신", description = "만료된 AccessToken을 RefreshToken을 사용해 갱신합니다.")
+    public HttpResponse<TokenRefreshResponse> refreshToken(@RequestBody TokenRefreshRequest refreshRequest) {
+        String newAccessToken = userService.refreshToken(refreshRequest.refreshToken());
+        return HttpResponse.okBuild(
+                TokenRefreshResponse.of(newAccessToken)
         );
     }
 }
