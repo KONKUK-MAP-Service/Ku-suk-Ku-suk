@@ -60,18 +60,20 @@ public class UserService {
         if (encryptedRefreshToken == null) {
             throw new RefreshTokenNotFoundException();
         }
-        String userId = redisService.getValues(encryptedRefreshToken);
-        System.out.println("현재 검색된 userId:"+userId);
+        //앞의 Bearer 삭제후 순수 RT 추출
+        String pureRefreshToken = encryptedRefreshToken.substring(7);
+        //redis에서 해당 키 검색해서 해당 토큰에 대응하는 key 추출
+        String userId = redisService.getValues(pureRefreshToken);
         User user = userRepository.findByUserId(userId);
 
         if (user == null) {
             throw new UserNotFoundException();
         }
 
+        //jwt 생성
         String newAccessToken = jwtUtil.createJwt(userId,user.getPassword(),86400000*7L);
 
-
-        return newAccessToken;
+        return "Bearer " + newAccessToken;
     }
 
 
