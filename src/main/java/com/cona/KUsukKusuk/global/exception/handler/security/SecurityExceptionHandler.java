@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.global.exception.handler.security;
 
+import com.cona.KUsukKusuk.global.exception.custom.security.RefreshTokenNotFoundException;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.global.response.ErrorResponse;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
@@ -22,5 +23,11 @@ public class SecurityExceptionHandler {
         return HttpResponse.status(e.getHttpStatus())
                 .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
 
+    }
+    @ExceptionHandler(RefreshTokenNotFoundException.class)  // 새로운 예외 핸들러 추가
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public HttpResponse<ErrorResponse> refreshTokenNotFoundExceptionHandler(RefreshTokenNotFoundException e) {
+        return HttpResponse.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
     }
 }

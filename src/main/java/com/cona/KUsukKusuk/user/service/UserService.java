@@ -1,6 +1,7 @@
 package com.cona.KUsukKusuk.user.service;
 
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
+import com.cona.KUsukKusuk.global.exception.custom.security.RefreshTokenNotFoundException;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
@@ -52,6 +53,30 @@ public class UserService {
 
         redisService.setValues(blacklistKey,"blacklist");
         return "blaklist "+blacklistKey;
+    }
+    public String refreshToken(String encryptedRefreshToken) {
+
+        String userId = redisService.getValues(encryptedRefreshToken);
+        if (userId == null) {
+            throw new RefreshTokenNotFoundException();
+        }
+        User byUserId = userRepository.findByUserId(userId);
+        if (byUserId == null) {
+            throw new
+        }
+
+        // Validate and decode the refresh token
+        Claims claims = jwtUtil.getAllClaimsFromToken(encryptedRefreshToken);
+
+        // Extract user details from the refresh token
+        String username = claims.getSubject();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new SecurityJwtNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+
+        // Generate a new access token
+        String newAccessToken = jwtUtil.generateAccessToken(user);
+
+        return newAccessToken;
     }
 
 

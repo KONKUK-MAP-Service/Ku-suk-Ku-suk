@@ -3,10 +3,13 @@ package com.cona.KUsukKusuk.user.controller;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.TokenRefreshRequest;
+import com.cona.KUsukKusuk.user.dto.TokenRefreshResponse;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinResponse;
 import com.cona.KUsukKusuk.user.dto.UserLogoutResponse;
 import com.cona.KUsukKusuk.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +48,14 @@ public class UserController {
 
         return HttpResponse.okBuild(
                 UserLogoutResponse.from(username,blacklist)
+        );
+    }
+    @PostMapping("/refresh")
+    @Operation(summary = "토큰 갱신", description = "만료된 AccessToken을 RefreshToken을 사용해 갱신합니다.")
+    public HttpResponse<TokenRefreshResponse> refreshToken(@RequestBody TokenRefreshRequest refreshRequest) {
+        String newAccessToken = userService.refreshToken(refreshRequest.getRefreshToken());
+        return HttpResponse.okBuild(
+                TokenRefreshResponse.of(newAccessToken)
         );
     }
 }
