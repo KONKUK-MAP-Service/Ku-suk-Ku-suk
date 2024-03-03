@@ -3,8 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Board">
     <insert id="save" parameterType="board" useGeneratedKeys="true" keyProperty="id">
-        insert into board_table(boardTitle, boardWriter, boardPass, boardContents, fileAttached)
-        values(#{boardTitle}, #{boardWriter}, #{boardPass}, #{boardContents}, #{fileAttached})
+        insert into spot_table(spotName, longitude, latitude, review)
+        values(#{spotName}, #{longitude}, #{latitude}, #{review})
     </insert>
 
 </mapper>
