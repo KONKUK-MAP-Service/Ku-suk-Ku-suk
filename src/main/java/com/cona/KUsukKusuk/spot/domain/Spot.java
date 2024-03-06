@@ -36,16 +36,20 @@ public class Spot extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "spot", nullable=true)
+    @OneToMany(mappedBy = "spot")
+    @Column(nullable = true)
     private List<UserLike> userLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "spot")
+    @Column(nullable = true)
     private List<Picture> pictures = new ArrayList<>();
 
     @OneToMany(mappedBy = "spot")
+    @Column(nullable = true)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "spot")
+    @Column(nullable = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
     @Column(nullable = false)
     private String spotName;

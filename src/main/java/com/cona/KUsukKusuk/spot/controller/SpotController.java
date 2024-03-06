@@ -18,7 +18,7 @@ public class SpotController {
 
     @PostMapping("/make")
     @Operation(summary = "장소 등록", description = "로그인 안 한 경우, 장소 등록")
-    public ResponseEntity<Spot> saveSpot(@ModelAttribute("spot") Spot spot){
+    public ResponseEntity<Spot> saveSpot(@ModelAttribute Spot spot){
         Spot savedSpot = spotService.save(spot);
         return  ResponseEntity.ok()
                 .body(spot);
