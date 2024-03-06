@@ -79,6 +79,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/users/join","/health","/","/users/refresh").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         //스웨거 접근권한 허용
                         .anyRequest().authenticated());

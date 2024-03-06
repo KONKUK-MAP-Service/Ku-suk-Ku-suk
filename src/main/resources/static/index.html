@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to 동훈's Adventure</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #ocean {
+            background: #3498db;
+            height: 100vh;
+            animation: wave 1s infinite linear;
+        }
+
+        .boat {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: boatMove 5s infinite alternate ease-in-out;
+        }
+
+        .sun {
+            width: 100px;
+            height: 100px;
+            background: #f39c12;
+            border-radius: 50%;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: sunMove 10s infinite linear;
+        }
+
+        .cloud {
+            width: 150px;
+            height: 70px;
+            background: #ecf0f1;
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            border-radius: 10px;
+            animation: cloudMove 15s infinite linear;
+        }
+
+        h1 {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Arial', sans-serif;
+            font-size: 3em;
+            color: #fff;
+        }
+
+        h2 {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Arial', sans-serif;
+            font-size: 1em;
+            color: #fff;
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-300px);
+            }
+        }
+
+        @keyframes boatMove {
+            0%, 100% {
+                transform: translateX(-500%);
+            }
+            50% {
+                transform: translateX(-450%);
+            }
+        }
+
+        @keyframes sunMove {
+            0% {
+                transform: translateY(500px);
+            }
+            50% {
+                transform: translateY(600px);
+            }
+            100% {
+                transform: translateY(500px);
+            }
+        }
+
+        @keyframes cloudMove {
+            0%, 100% {
+                transform: translateX(10%);
+            }
+            50% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="ocean"></div>
+<div class="boat"></div>
+<div class="sun"></div>
+<div class="cloud"></div>
+<h1>쿠석쿠석 서버</h1>
+<h2>powered by 동훈</h2>
+</body>
+</html>
