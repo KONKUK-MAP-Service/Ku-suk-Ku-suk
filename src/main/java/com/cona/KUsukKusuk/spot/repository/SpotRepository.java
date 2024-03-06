@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 
 public interface SpotRepository extends JpaRepository<Spot, Long> {
-   public Spot save(Spot spot);
 }

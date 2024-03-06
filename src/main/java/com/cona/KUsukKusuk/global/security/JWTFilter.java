@@ -27,11 +27,10 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization= request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-
             System.out.println("token null");
             filterChain.doFilter(request, response);
-
             return;
+
         }
 
         System.out.println("authorization now");
@@ -40,6 +39,8 @@ public class JWTFilter extends OncePerRequestFilter {
         if (jwtUtil.isExpired(token)) {
 
             System.out.println("token expired");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("AccessToken 기간만료");
             filterChain.doFilter(request, response);
 
             return;

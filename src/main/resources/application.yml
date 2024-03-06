@@ -17,6 +17,11 @@ spring:
   jwt:
     secret : ${jwt_secret}
 
+  data:
+    redis:
+      host: ${redis_host}
+      port: ${redis_port}
+
 logging:
   level:
     org.hibernate.SQL: info

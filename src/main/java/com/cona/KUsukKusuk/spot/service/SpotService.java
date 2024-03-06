@@ -4,6 +4,7 @@ import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,4 +24,7 @@ public class SpotService {
         return savedSpot;
     }
 
+//    public User findbyId(Long id) {
+//
+//    }
 }

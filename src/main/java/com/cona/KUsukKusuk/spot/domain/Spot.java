@@ -17,16 +17,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Spot extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,19 +36,15 @@ public class Spot extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "spot")
-    @Column(nullable = true)
     private List<UserLike> userLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "spot")
-    @Column(nullable = true)
     private List<Picture> pictures = new ArrayList<>();
 
     @OneToMany(mappedBy = "spot")
-    @Column(nullable = true)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "spot")
-    @Column(nullable = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
     @Column(nullable = false)
     private String spotName;
