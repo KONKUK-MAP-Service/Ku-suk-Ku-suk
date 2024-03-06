@@ -60,5 +60,6 @@ public class Spot extends BaseEntity {
     @Column(nullable = false)
     private String review;
 
+    @Column(nullable = true)
     private Long likes;
 }
