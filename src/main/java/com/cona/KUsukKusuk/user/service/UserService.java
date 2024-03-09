@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.user.service;
 
+import com.cona.KUsukKusuk.email.service.EmailService;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.global.redis.RedisService;
@@ -9,6 +10,8 @@ import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final RedisService redisService;
+    private final EmailService mailService;
     private final JWTUtil jwtUtil;
 
     public User save(UserJoinRequest userJoinRequest) {
@@ -74,6 +78,34 @@ public class UserService {
             throw new SecurityJwtNotFoundException(HttpExceptionCode.JWT_NOT_FOUND);
         }
     }
+    public String findPassword(String userId, String email) {
+        User member = userRepository.findByUserIdAndEmail(userId, email)
+                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
 
+        String newPassword = generateNewPassword();
+        member.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(member);
+
+        String title = "쿠석쿠석 임시 비밀번호 발급";
+        mailService.sendEmail(email, title, "새로운 비밀번호 : " + newPassword);
+
+        return email;
+    }
+    private String generateNewPassword() {
+        String randomString = RandomStringUtils.randomAlphanumeric(9);
+
+        int randomIndex = (int) (Math.random() * 9);
+
+        char randomNumber = (char) ('0' + (int) (Math.random() * 10));
+        char[] newPasswordChars = randomString.toCharArray();
+        newPasswordChars[randomIndex] = randomNumber;
+
+        return new String(newPasswordChars);
+    }
+
+    public String getUsernameBySecurityContext() {
+        return SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+    }
 
 }

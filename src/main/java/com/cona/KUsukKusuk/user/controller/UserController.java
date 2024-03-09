@@ -3,6 +3,8 @@ package com.cona.KUsukKusuk.user.controller;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.FindPasswordRequest;
+import com.cona.KUsukKusuk.user.dto.FindPasswordResponse;
 import com.cona.KUsukKusuk.user.dto.TokenRefreshRequest;
 import com.cona.KUsukKusuk.user.dto.TokenRefreshResponse;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
@@ -60,6 +62,14 @@ public class UserController {
         String newAccessToken = userService.refreshToken(refreshRequest.refreshToken());
         return HttpResponse.okBuild(
                 TokenRefreshResponse.of(newAccessToken)
+        );
+    }
+    @PostMapping("/find-password")
+    @Operation(summary = "비밀번호 찾기", description = "아이디와 이메일로 임시 비밀번호를 발급합니다.")
+    public HttpResponse<FindPasswordResponse> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) {
+        String email = userService.findPassword(findPasswordRequest.userId(), findPasswordRequest.email());
+        return HttpResponse.okBuild(
+                FindPasswordResponse.of(email)
         );
     }
 }
