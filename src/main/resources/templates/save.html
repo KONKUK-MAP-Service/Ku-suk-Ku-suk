@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>save</title>
+</head>
+<body>
+<form action="/save" method="post" enctype="multipart/form-data"> <!-- action : 해당 데이터가 도착할 URL-->
+    spot이름: <input type="text" name="spotName"><br>
+    위도: <input type="text" name="latitude"><br>
+    경도: <input type="text" name="longtitude"><br>
+    리뷰: <textarea name="review" cols="30" rows="10"></textarea>
+    사진: <input type="file" name="boardFile" multiple><br>
+    <input type="submit" value="작성">
+</form>
+</body>
+</html>
