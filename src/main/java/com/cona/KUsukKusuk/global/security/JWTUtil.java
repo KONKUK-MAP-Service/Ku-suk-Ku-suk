@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -73,7 +74,8 @@ public class JWTUtil {
                 .compact();
 
         // redis에 RT저장
-        redisService.setValues(refreshToken,userid);
+        redisService.setValues(refreshToken, userid, Duration.ofMillis(expiredMs));
+
 
         return refreshToken;
     }
@@ -94,6 +96,7 @@ public class JWTUtil {
         }
         return null;
     }
+
 
 
 }
