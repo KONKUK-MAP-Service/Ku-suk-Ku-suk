@@ -41,6 +41,9 @@ jobs:
           spring.jwt.secret: ${{ secrets.JWT_SECRET }}
           spring.data.redis.host: ${{secrets.REDIS_HOST}}
           spring.data.redis.port: ${{secrets.REDIS_PORT}}
+          spring.mail.username: ${{secrets.MAIL_USERNAME}}
+          spring.mail.password: ${{secrets.MAIL_PASSWORD}}
+
 
 
       #gradlew 실행을 위한 권한 추가
