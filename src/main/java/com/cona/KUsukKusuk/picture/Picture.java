@@ -26,4 +26,9 @@ public class Picture {
     @Column(nullable = false)
     private String pictureUrl;
 
+    public Picture(Spot spot, String pictureUrl) {
+        this.spot = spot;
+        this.pictureUrl = pictureUrl;
+    }
+
 }
