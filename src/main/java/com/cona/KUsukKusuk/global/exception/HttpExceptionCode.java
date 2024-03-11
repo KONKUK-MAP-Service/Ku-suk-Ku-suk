@@ -21,6 +21,14 @@ public enum HttpExceptionCode {
     USERID_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 ID의 유저 정보를 찾을수 없습니다."),
     EMAIL_USER_NOT_EQUAL(HttpStatus.NOT_FOUND,"해당이메일과 사용자 정보가 일치하지 않습니다."),
 
+    INCORRECT_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "올바르지 않은 리프레시 토큰입니다. 기한이 만료되었거나, 이미 로그아웃이 완료되어 DB에 존재하지 않는 상태입니다."),
+    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다. 토큰을 재발급하세요"),
+    WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "토큰의 정보가 임의로 변경되었습니다."),
+    UNKNOWN_TOKEN(HttpStatus.UNAUTHORIZED, "인증 토큰이 존재하지 않습니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰의 길이나 형식이 올바르지 않습니다."),
+    HEADER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Authorization 헤더 정보가 존재하지 않습니다."),
+    BEARER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Bearer 로 Authorization 헤더가 시작되지 않습니다."),
+
     EMAIL_NOT_SEND(HttpStatus.NOT_FOUND,"이메일이 전송에 실패하였습니다.");
 
 

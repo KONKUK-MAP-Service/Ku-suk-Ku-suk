@@ -96,8 +96,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
             throws IOException {
 
-        response.getWriter().write("해당 사용자의 아이디나 비밀번호가 옳지 않습니다. 다시 확인해주세요");
-        response.setStatus(400);
+        setResponse(response, 406,"아이디나 비밀번호가 일치하지 않습니다.");
+
     }
     private void setResponse(HttpServletResponse response,int status, String message) throws RuntimeException, IOException {
         response.setContentType("application/json;charset=UTF-8");
