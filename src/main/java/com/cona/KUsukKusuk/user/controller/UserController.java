@@ -11,6 +11,7 @@ import com.cona.KUsukKusuk.user.dto.TokenRefreshResponse;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinResponse;
 import com.cona.KUsukKusuk.user.dto.UserLogoutResponse;
+import com.cona.KUsukKusuk.user.dto.UserProfileResponse;
 import com.cona.KUsukKusuk.user.exception.PasswordNotMatchException;
 import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,5 +81,14 @@ public class UserController {
 
         return HttpResponse.okBuild("비밀번호가 일치합니다.");
 
+    }
+    @GetMapping("/profile")
+    @Operation(summary = "마이페이지 프로필 조회", description = "현재 로그인한 사용자의 프로필을 조회합니다.")
+    public HttpResponse<UserProfileResponse> getUserProfile() {
+        String userId = userService.getUsernameBySecurityContext();
+        User user = userService.findMemberByUsername(userId);
+        return HttpResponse.okBuild(
+                UserProfileResponse.of(user)
+        );
     }
 }
