@@ -7,6 +7,7 @@ import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundE
 import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.UpdateUserProfileRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserProfileResponse;
 import com.cona.KUsukKusuk.user.exception.NickNameAlreadyExistException;
@@ -160,6 +161,39 @@ public class UserService {
                 .ifPresent(m -> {
                     throw new UserExistException(HttpExceptionCode.EMAIL_ALREADY_EXIST);
                 });
+    }
+    public User updateUserProfile(String userId, UpdateUserProfileRequest request) {
+        User currentUser = findMemberByUsername(userId);
+
+        if (!currentUser.getNickname().equals(request.nickname())) {
+            userRepository.findByNickname(request.nickname())
+                    .ifPresent(m -> {
+                        throw new NickNameAlreadyExistException();
+                    });
+        }
+
+        if (!currentUser.getEmail().equals(request.email())) {
+            checkDuplicatedEmail(request.email());
+        }
+
+        if (!currentUser.getUserId().equals(request.userid())) {
+            userRepository.findByUserId(request.userid())
+                    .ifPresent(m -> {
+                        throw new UserIdAlreadyExistException();
+                    });
+            currentUser.setUserId(request.userid());
+        }
+
+        if (request.password() != null && !request.password().isEmpty()) {
+            currentUser.setPassword(bCryptPasswordEncoder.encode(request.password()));
+            currentUser.setNoCryptpassword(request.password());
+        }
+
+        currentUser.setNickname(request.nickname());
+        currentUser.setEmail(request.email());
+        userRepository.save(currentUser);
+
+        return currentUser;
     }
 
 

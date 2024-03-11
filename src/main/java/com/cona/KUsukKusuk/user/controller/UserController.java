@@ -8,6 +8,8 @@ import com.cona.KUsukKusuk.user.dto.FindPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordResponse;
 import com.cona.KUsukKusuk.user.dto.TokenRefreshRequest;
 import com.cona.KUsukKusuk.user.dto.TokenRefreshResponse;
+import com.cona.KUsukKusuk.user.dto.UpdateProfileResponse;
+import com.cona.KUsukKusuk.user.dto.UpdateUserProfileRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinResponse;
 import com.cona.KUsukKusuk.user.dto.UserLogoutResponse;
@@ -91,4 +93,15 @@ public class UserController {
                 UserProfileResponse.of(user)
         );
     }
+
+    @PatchMapping("/update-profile")
+    @Operation(summary = "마이페이지 프로필 수정", description = "현재 로그인한 사용자의 프로필 정보를 수정합니다.")
+    public HttpResponse<UpdateProfileResponse> updateUserProfile(@Valid @RequestBody UpdateUserProfileRequest request) {
+        String userId = userService.getUsernameBySecurityContext();
+        User updatedUser = userService.updateUserProfile(userId, request);
+        return HttpResponse.okBuild(
+                UpdateProfileResponse.of(updatedUser)
+        );
+    }
+
 }
