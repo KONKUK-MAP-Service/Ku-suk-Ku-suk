@@ -1,14 +1,32 @@
 package com.cona.KUsukKusuk.user.service;
 
+import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
+import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
+import com.cona.KUsukKusuk.comment.Comment;
+import com.cona.KUsukKusuk.comment.repository.CommentRepositofy;
 import com.cona.KUsukKusuk.email.service.EmailService;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
+import com.cona.KUsukKusuk.global.exception.custom.security.IncorrectRefreshTokenException;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
+import com.cona.KUsukKusuk.like.UserLike;
+import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
+import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.UpdateUserProfileRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
+import com.cona.KUsukKusuk.user.dto.UserProfileResponse;
+import com.cona.KUsukKusuk.user.exception.NickNameAlreadyExistException;
+import com.cona.KUsukKusuk.user.exception.PasswordNotMatchException;
+import com.cona.KUsukKusuk.user.exception.UserExistException;
+import com.cona.KUsukKusuk.user.exception.UserIdAlreadyExistException;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import java.time.Duration;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +37,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final CommentRepositofy commentRepository;
+    private final SpotRepository spotRepository;
+    private final UserLikeRepository userLikeRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     private final RedisService redisService;
     private final EmailService mailService;
@@ -28,13 +51,33 @@ public class UserService {
     public User save(UserJoinRequest userJoinRequest) {
         User user = userJoinRequest.toEntity();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.findByUserId(user.getUserId())
+                .ifPresent(m -> {
+                    throw new UserIdAlreadyExistException();
+                });
+
+        userRepository.findByNickname(user.getNickname())
+                .ifPresent(m -> {
+                    throw new NickNameAlreadyExistException();
+                });
+
+        checkDuplicatedEmail(user.getEmail());
+
         User savedUser = userRepository.save(user);
+
 
         return savedUser;
     }
 
-    public String logout(String encryptedRefreshToken, String accessToken) {
+    public String logout(String encryptedRefreshToken) {
         this.isTokenPresent(encryptedRefreshToken);
+        //RT가 레디스에 저장된값이랑 일치하는지 확인
+        String userId = redisService.getValues(encryptedRefreshToken);
+        if (!redisService.checkExistsValue(userId)) {
+            throw new IncorrectRefreshTokenException();
+        }
+        //RT 를 레디스에서 삭제
+        redisService.deleteValues(encryptedRefreshToken);
 
         String result = addToBlacklist(encryptedRefreshToken);
         return result;
@@ -45,7 +88,8 @@ public class UserService {
     private String addToBlacklist(String encryptedRefreshToken) {
         String blacklistKey = encryptedRefreshToken;
 
-        redisService.setValues(blacklistKey, "blacklist");
+        redisService.setValues(blacklistKey, "blacklist", Duration.ofMillis(60 * 60 * 100L));
+
         return "blaklist " + blacklistKey;
     }
 
@@ -66,7 +110,8 @@ public class UserService {
     }
 
     private String getAccessToken( User user) {
-        return jwtUtil.createJwt(user.getUserId(), user.getPassword(), 86400000 * 7L);
+        //6분간 유지되는 AT 재발급
+        return jwtUtil.createJwt(user.getUserId(), user.getPassword(), 60 * 60 * 100L);
     }
 
     private static String getBearerSubstring(String encryptedRefreshToken) {
@@ -79,8 +124,12 @@ public class UserService {
         }
     }
     public String findPassword(String userId, String email) {
-        User member = userRepository.findByUserIdAndEmail(userId, email)
-                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+        User member=userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USERID_NOT_FOUND));
+
+        if (member.getEmail() != email) {
+            throw new UserNotFoundException(HttpExceptionCode.EMAIL_USER_NOT_EQUAL);
+        }
 
         String newPassword = generateNewPassword();
         member.setPassword(bCryptPasswordEncoder.encode(newPassword));
@@ -107,5 +156,91 @@ public class UserService {
         return SecurityContextHolder.getContext().getAuthentication()
                 .getName();
     }
+
+    public void checkPassword(String enteredPassword) {
+        String username = getUsernameBySecurityContext();
+        String storedPassword = userRepository.findByUserId(username)
+                .map(User::getPassword)
+                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+
+        if( ! bCryptPasswordEncoder.matches(enteredPassword, storedPassword)){
+            throw new PasswordNotMatchException();
+        }
+    }
+    public User findMemberByUsername(String username) {
+        return userRepository.findByUserId(username)
+                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+    }
+    private void checkDuplicatedEmail(String email) {
+        userRepository.findByEmail(email)
+                .ifPresent(m -> {
+                    throw new UserExistException(HttpExceptionCode.EMAIL_ALREADY_EXIST);
+                });
+    }
+    public User updateUserProfile(String userId, UpdateUserProfileRequest request) {
+        User currentUser = findMemberByUsername(userId);
+
+        if (!currentUser.getNickname().equals(request.nickname())) {
+            userRepository.findByNickname(request.nickname())
+                    .ifPresent(m -> {
+                        throw new NickNameAlreadyExistException();
+                    });
+        }
+
+        if (!currentUser.getEmail().equals(request.email())) {
+            checkDuplicatedEmail(request.email());
+        }
+
+        if (!currentUser.getUserId().equals(request.userid())) {
+            userRepository.findByUserId(request.userid())
+                    .ifPresent(m -> {
+                        throw new UserIdAlreadyExistException();
+                    });
+            currentUser.setUserId(request.userid());
+        }
+
+        if (request.password() != null && !request.password().isEmpty()) {
+            currentUser.setPassword(bCryptPasswordEncoder.encode(request.password()));
+            currentUser.setNoCryptpassword(request.password());
+        }
+
+        currentUser.setNickname(request.nickname());
+        currentUser.setEmail(request.email());
+        userRepository.save(currentUser);
+
+        return currentUser;
+    }
+    @Transactional
+    public void deleteUser(String userId) {
+        User user = findMemberByUsername(userId);
+
+        // 댓글 삭제
+        List<Comment> commentsToDelete = user.getComments();
+        commentsToDelete.forEach(comment -> comment.getSpot().getComments().remove(comment));
+        commentRepository.deleteAll(commentsToDelete);
+
+        // 장소 삭제
+        List<Spot> spotsToDelete = user.getSpots();
+        spotRepository.deleteAll(spotsToDelete);
+
+        // 즐겨찾기 삭제
+        List<Bookmark> bookmarksToDelete = user.getBookmarks();
+        bookmarkRepository.deleteAll(bookmarksToDelete);
+
+        // 좋아요 삭제
+        List<UserLike> userLikesToDelete = user.getUserLikes();
+        userLikeRepository.deleteAll(userLikesToDelete);
+
+
+
+
+        userRepository.delete(user);
+    }
+    public UserProfileResponse getCurrentUserProfile() {
+        String userId = getUsernameBySecurityContext();
+        User user = findMemberByUsername(userId);
+        return UserProfileResponse.of(user);
+    }
+
 
 }

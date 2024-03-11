@@ -1,8 +1,13 @@
 package com.cona.KUsukKusuk.global.security;
 
+import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.redis.RedisService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -95,6 +100,30 @@ public class JWTUtil {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    public boolean validateToken(HttpServletRequest request) {
+        try {
+            String token = extractHeader(request);
+            Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            throw new JwtException(HttpExceptionCode.EXPIRED_TOKEN.getMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {//토큰이 존재하지 않을 경우
+            throw new JwtException(HttpExceptionCode.JWT_NOT_FOUND.getMessage());
+        } catch (SignatureException e) {//토큰이 임의의 값으로 변경된 경우
+            throw new JwtException(HttpExceptionCode.WRONG_TYPE_TOKEN.getMessage());
+        } catch (MalformedJwtException e) { //토큰 길이나 형식이 다른 경우
+            throw new JwtException(HttpExceptionCode.UNSUPPORTED_TOKEN.getMessage());
+        }
+
+        return true;
+
+    }
+
+    public static String extractHeader(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        String token = authorization.split(" ")[1];
+        return token;
     }
 
 

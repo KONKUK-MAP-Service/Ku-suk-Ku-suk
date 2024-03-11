@@ -1,6 +1,8 @@
 package com.cona.KUsukKusuk.global.security;
 
+import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.user.domain.User;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,25 +28,36 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String authorization= request.getHeader("Authorization");
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            System.out.println("token null");
+        //Authorization 이 없어도 접근 가능한 api일 경우 통과
+        if (authorization == null) {
+
             filterChain.doFilter(request, response);
+
+
             return;
-
         }
+        try {
+            jwtUtil.validateToken(request);
+        } catch (JwtException e) {
+            String message = e.getMessage();
+            if(HttpExceptionCode.EXPIRED_TOKEN.getMessage().equals(message)) {
+                setResponse(response, HttpExceptionCode.EXPIRED_TOKEN);
+            }
+            if (HttpExceptionCode.JWT_NOT_FOUND.getMessage().equals(message)) {
+                setResponse(response,HttpExceptionCode.JWT_NOT_FOUND);
+            }
+            if (HttpExceptionCode.WRONG_TYPE_TOKEN.getMessage().equals(message)) {
+                setResponse(response, HttpExceptionCode.WRONG_TYPE_TOKEN);
+            }
+            if (HttpExceptionCode.UNSUPPORTED_TOKEN.getMessage().equals(message)) {
+                setResponse(response,HttpExceptionCode.UNSUPPORTED_TOKEN);
+            }
 
+            return;
+        }
         System.out.println("authorization now");
-        String token = authorization.split(" ")[1];
 
-        if (jwtUtil.isExpired(token)) {
-
-            System.out.println("token expired");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("AccessToken 기간만료");
-            filterChain.doFilter(request, response);
-
-            return;
-        }
+        String token = JWTUtil.extractHeader(request);
 
         String username = jwtUtil.getUserId(token);
         String password = jwtUtil.getPassword(token);
@@ -60,5 +73,10 @@ public class JWTFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
+    }
+    private void setResponse(HttpServletResponse response, HttpExceptionCode errorMessage) throws RuntimeException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(errorMessage.getHttpStatus().value());
+        response.getWriter().print(errorMessage.getMessage());
     }
 }

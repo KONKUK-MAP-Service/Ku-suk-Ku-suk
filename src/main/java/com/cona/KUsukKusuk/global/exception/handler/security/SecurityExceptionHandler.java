@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.global.exception.handler.security;
 
+import com.cona.KUsukKusuk.global.exception.custom.security.IncorrectRefreshTokenException;
 import com.cona.KUsukKusuk.global.exception.custom.security.RefreshTokenNotFoundException;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.global.response.ErrorResponse;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityExceptionHandler {
 
     @ExceptionHandler(SecurityJwtNotFoundException.class)
@@ -24,9 +25,15 @@ public class SecurityExceptionHandler {
                 .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
 
     }
-    @ExceptionHandler(RefreshTokenNotFoundException.class)  // 새로운 예외 핸들러 추가
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public HttpResponse<ErrorResponse> refreshTokenNotFoundExceptionHandler(RefreshTokenNotFoundException e) {
+        return HttpResponse.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
+    }
+    @ExceptionHandler(IncorrectRefreshTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public HttpResponse<ErrorResponse> incorrectRefreshTokenExceptionHandler(IncorrectRefreshTokenException e) {
         return HttpResponse.status(e.getHttpStatus())
                 .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
     }
