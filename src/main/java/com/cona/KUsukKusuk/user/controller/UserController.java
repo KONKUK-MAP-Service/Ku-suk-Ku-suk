@@ -6,6 +6,7 @@ import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.CheckPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordResponse;
+import com.cona.KUsukKusuk.user.dto.LogoutRequest;
 import com.cona.KUsukKusuk.user.dto.TokenRefreshRequest;
 import com.cona.KUsukKusuk.user.dto.TokenRefreshResponse;
 import com.cona.KUsukKusuk.user.dto.UpdateProfileResponse;
@@ -54,10 +55,11 @@ public class UserController {
     @PatchMapping("/logout")
     @Operation(summary = "로그아웃", description = "현재 로그인한 사용자의 로그아웃을 요청하여 RfreshToken을 블랙처리 합니다.")
 
-    public HttpResponse<UserLogoutResponse> logout(HttpServletRequest request) {
+    public HttpResponse<UserLogoutResponse> logout(@Valid @RequestBody LogoutRequest request) {
 
         String username = userService.getUsernameBySecurityContext();
-        String encryptedRefreshToken = jwtUtil.getRefreshToken(request);
+        String refreshtoken = request.refreshtoken();
+        String encryptedRefreshToken = jwtUtil.getRefreshToken(refreshtoken);
         String blacklist = userService.logout(encryptedRefreshToken);
 
         return HttpResponse.okBuild(
@@ -83,7 +85,7 @@ public class UserController {
     @PostMapping("/check-password")
     @Operation(summary = "사용자 비밀번호 확인", description = "현재 로그인 한 사용자의 비밀번호를 확인합니다.")
     public HttpResponse<String> checkPassword(@Valid @RequestBody CheckPasswordRequest checkPasswordRequest) {
-        userService.checkPassword(checkPasswordRequest.getPassword());
+        userService.checkPassword(checkPasswordRequest.password());
 
         return HttpResponse.okBuild("비밀번호가 일치합니다.");
 
