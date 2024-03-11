@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +49,7 @@ public class UserController {
         );
     }
     @PatchMapping("/logout")
-    @Operation(summary = "로그아웃", description = "로그아웃을 요청하여 RfreshToken을 블랙처리 합니다.")
+    @Operation(summary = "로그아웃", description = "현재 로그인한 사용자의 로그아웃을 요청하여 RfreshToken을 블랙처리 합니다.")
 
     public HttpResponse<UserLogoutResponse> logout(HttpServletRequest request) {
 
@@ -102,6 +103,14 @@ public class UserController {
         return HttpResponse.okBuild(
                 UpdateProfileResponse.of(updatedUser)
         );
+    }
+    @DeleteMapping("/delete")
+    @Operation(summary = "회원 탈퇴", description = "현재 로그인한 사용자를 탈퇴합니다.")
+    public HttpResponse<String> deleteUser() {
+        String userId = userService.getUsernameBySecurityContext();
+        userService.deleteUser(userId);
+
+        return HttpResponse.okBuild("회원 탈퇴가 성공적으로 진행되었습니다.");
     }
 
 }

@@ -1,11 +1,19 @@
 package com.cona.KUsukKusuk.user.service;
 
+import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
+import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
+import com.cona.KUsukKusuk.comment.Comment;
+import com.cona.KUsukKusuk.comment.repository.CommentRepositofy;
 import com.cona.KUsukKusuk.email.service.EmailService;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.exception.custom.security.IncorrectRefreshTokenException;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
+import com.cona.KUsukKusuk.like.UserLike;
+import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
+import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UpdateUserProfileRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
@@ -16,7 +24,9 @@ import com.cona.KUsukKusuk.user.exception.UserExistException;
 import com.cona.KUsukKusuk.user.exception.UserIdAlreadyExistException;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.time.Duration;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +37,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final CommentRepositofy commentRepository;
+    private final SpotRepository spotRepository;
+    private final UserLikeRepository userLikeRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     private final RedisService redisService;
     private final EmailService mailService;
@@ -194,6 +209,32 @@ public class UserService {
         userRepository.save(currentUser);
 
         return currentUser;
+    }
+    @Transactional
+    public void deleteUser(String userId) {
+        User user = findMemberByUsername(userId);
+
+        // 댓글 삭제
+        List<Comment> commentsToDelete = user.getComments();
+        commentsToDelete.forEach(comment -> comment.getSpot().getComments().remove(comment));
+        commentRepository.deleteAll(commentsToDelete);
+
+        // 장소 삭제
+        List<Spot> spotsToDelete = user.getSpots();
+        spotRepository.deleteAll(spotsToDelete);
+
+        // 즐겨찾기 삭제
+        List<Bookmark> bookmarksToDelete = user.getBookmarks();
+        bookmarkRepository.deleteAll(bookmarksToDelete);
+
+        // 좋아요 삭제
+        List<UserLike> userLikesToDelete = user.getUserLikes();
+        userLikeRepository.deleteAll(userLikesToDelete);
+
+
+
+
+        userRepository.delete(user);
     }
 
 
