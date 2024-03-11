@@ -9,7 +9,10 @@ import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserProfileResponse;
+import com.cona.KUsukKusuk.user.exception.NickNameAlreadyExistException;
 import com.cona.KUsukKusuk.user.exception.PasswordNotMatchException;
+import com.cona.KUsukKusuk.user.exception.UserExistException;
+import com.cona.KUsukKusuk.user.exception.UserIdAlreadyExistException;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import java.time.Duration;
@@ -32,7 +35,20 @@ public class UserService {
     public User save(UserJoinRequest userJoinRequest) {
         User user = userJoinRequest.toEntity();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.findByUserId(user.getUserId())
+                .ifPresent(m -> {
+                    throw new UserIdAlreadyExistException();
+                });
+
+        userRepository.findByNickname(user.getNickname())
+                .ifPresent(m -> {
+                    throw new NickNameAlreadyExistException();
+                });
+
+        checkDuplicatedEmail(user.getEmail());
+
         User savedUser = userRepository.save(user);
+
 
         return savedUser;
     }
@@ -138,6 +154,12 @@ public class UserService {
     public User findMemberByUsername(String username) {
         return userRepository.findByUserId(username)
                 .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+    }
+    private void checkDuplicatedEmail(String email) {
+        userRepository.findByEmail(email)
+                .ifPresent(m -> {
+                    throw new UserExistException(HttpExceptionCode.EMAIL_ALREADY_EXIST);
+                });
     }
 
 

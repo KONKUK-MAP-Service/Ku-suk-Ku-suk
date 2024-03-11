@@ -30,6 +30,10 @@ public enum HttpExceptionCode {
     BEARER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Bearer 로 Authorization 헤더가 시작되지 않습니다."),
 
     PASSWORD_NOT_MATCH(HttpStatus.CONFLICT, "현재 로그인한 사용자의 비밀번호와 맞지 않습니다."),
+    USERID_EXIST(HttpStatus.CONFLICT,"이미 존재하는 아이디 입니다."),
+    NICKNAME_ALREADY_EXIST(HttpStatus.CONFLICT,"이미 존재하는 닉네임 입니다."),
+    USER_EXIST(HttpStatus.CONFLICT,"이미 존재하는 사용자 입니다."),
+    EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT,"이미 존재하는 이메일 입니다."),
 
     EMAIL_NOT_SEND(HttpStatus.NOT_FOUND,"이메일이 전송에 실패하였습니다.");
 
