@@ -79,8 +79,12 @@ public class UserService {
         }
     }
     public String findPassword(String userId, String email) {
-        User member = userRepository.findByUserIdAndEmail(userId, email)
-                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+        User member=userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USERID_NOT_FOUND));
+
+        if (member.getEmail() != email) {
+            throw new UserNotFoundException(HttpExceptionCode.EMAIL_USER_NOT_EQUAL);
+        }
 
         String newPassword = generateNewPassword();
         member.setPassword(bCryptPasswordEncoder.encode(newPassword));

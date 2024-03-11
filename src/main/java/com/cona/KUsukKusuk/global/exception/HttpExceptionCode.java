@@ -18,6 +18,9 @@ public enum HttpExceptionCode {
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
 
+    USERID_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 ID의 유저 정보를 찾을수 없습니다."),
+    EMAIL_USER_NOT_EQUAL(HttpStatus.NOT_FOUND,"해당이메일과 사용자 정보가 일치하지 않습니다."),
+
     EMAIL_NOT_SEND(HttpStatus.NOT_FOUND,"이메일이 전송에 실패하였습니다.");
 
 
