@@ -29,6 +29,8 @@ public enum HttpExceptionCode {
     HEADER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Authorization 헤더 정보가 존재하지 않습니다."),
     BEARER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Bearer 로 Authorization 헤더가 시작되지 않습니다."),
 
+    PASSWORD_NOT_MATCH(HttpStatus.CONFLICT, "현재 로그인한 사용자의 비밀번호와 맞지 않습니다."),
+
     EMAIL_NOT_SEND(HttpStatus.NOT_FOUND,"이메일이 전송에 실패하였습니다.");
 
 

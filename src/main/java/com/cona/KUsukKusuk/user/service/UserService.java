@@ -8,6 +8,7 @@ import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
+import com.cona.KUsukKusuk.user.exception.PasswordNotMatchException;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import java.time.Duration;
@@ -121,6 +122,17 @@ public class UserService {
     public String getUsernameBySecurityContext() {
         return SecurityContextHolder.getContext().getAuthentication()
                 .getName();
+    }
+
+    public void checkPassword(String enteredPassword) {
+        String username = getUsernameBySecurityContext();
+        String storedPassword = userRepository.findByUserId(username)
+                .map(User::getPassword)
+                .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+
+        if( ! bCryptPasswordEncoder.matches(enteredPassword, storedPassword)){
+            throw new PasswordNotMatchException();
+        }
     }
 
 }

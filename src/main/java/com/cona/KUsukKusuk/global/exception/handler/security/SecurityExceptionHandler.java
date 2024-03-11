@@ -25,7 +25,7 @@ public class SecurityExceptionHandler {
                 .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
 
     }
-    @ExceptionHandler(RefreshTokenNotFoundException.class)  // 새로운 예외 핸들러 추가
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public HttpResponse<ErrorResponse> refreshTokenNotFoundExceptionHandler(RefreshTokenNotFoundException e) {
         return HttpResponse.status(e.getHttpStatus())

@@ -3,6 +3,7 @@ package com.cona.KUsukKusuk.user.controller;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.CheckPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordResponse;
 import com.cona.KUsukKusuk.user.dto.TokenRefreshRequest;
@@ -10,6 +11,7 @@ import com.cona.KUsukKusuk.user.dto.TokenRefreshResponse;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinResponse;
 import com.cona.KUsukKusuk.user.dto.UserLogoutResponse;
+import com.cona.KUsukKusuk.user.exception.PasswordNotMatchException;
 import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,8 +48,7 @@ public class UserController {
 
     public HttpResponse<UserLogoutResponse> logout(HttpServletRequest request) {
 
-        String username= SecurityContextHolder.getContext().getAuthentication()
-                .getName();
+        String username = userService.getUsernameBySecurityContext();
         String encryptedRefreshToken = jwtUtil.getRefreshToken(request);
         String blacklist = userService.logout(encryptedRefreshToken);
 
@@ -70,5 +71,13 @@ public class UserController {
         return HttpResponse.okBuild(
                 FindPasswordResponse.of(email)
         );
+    }
+    @PostMapping("/check-password")
+    @Operation(summary = "사용자 비밀번호 확인", description = "현재 로그인 한 사용자의 비밀번호를 확인합니다.")
+    public HttpResponse<String> checkPassword(@Valid @RequestBody CheckPasswordRequest checkPasswordRequest) {
+        userService.checkPassword(checkPasswordRequest.getPassword());
+
+        return HttpResponse.okBuild("비밀번호가 일치합니다.");
+
     }
 }

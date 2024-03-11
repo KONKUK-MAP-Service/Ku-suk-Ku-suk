@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.user.exception.handler;
 
 import com.cona.KUsukKusuk.global.response.ErrorResponse;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
+import com.cona.KUsukKusuk.user.exception.PasswordNotMatchException;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -19,6 +20,12 @@ public class UserExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public HttpResponse<ErrorResponse> userNotFoundExceptionHandler(UserNotFoundException e) {
+        return HttpResponse.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
+    }
+    @ExceptionHandler(PasswordNotMatchException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public HttpResponse<ErrorResponse> passwordNotMatchExceptionHandler(PasswordNotMatchException e) {
         return HttpResponse.status(e.getHttpStatus())
                 .body(ErrorResponse.from(e.getHttpStatus(), e.getMessage()));
     }
