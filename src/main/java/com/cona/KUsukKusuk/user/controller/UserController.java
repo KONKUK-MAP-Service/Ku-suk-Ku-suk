@@ -49,8 +49,7 @@ public class UserController {
         String username= SecurityContextHolder.getContext().getAuthentication()
                 .getName();
         String encryptedRefreshToken = jwtUtil.getRefreshToken(request);
-        String accessToken = jwtUtil.getAccessToken(request);
-        String blacklist = userService.logout(encryptedRefreshToken, accessToken);
+        String blacklist = userService.logout(encryptedRefreshToken);
 
         return HttpResponse.okBuild(
                 UserLogoutResponse.from(username,blacklist)

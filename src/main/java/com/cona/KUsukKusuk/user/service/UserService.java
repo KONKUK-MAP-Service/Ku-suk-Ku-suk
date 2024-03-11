@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.user.service;
 
 import com.cona.KUsukKusuk.email.service.EmailService;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
+import com.cona.KUsukKusuk.global.exception.custom.security.IncorrectRefreshTokenException;
 import com.cona.KUsukKusuk.global.exception.custom.security.SecurityJwtNotFoundException;
 import com.cona.KUsukKusuk.global.redis.RedisService;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
@@ -9,6 +10,7 @@ import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +35,15 @@ public class UserService {
         return savedUser;
     }
 
-    public String logout(String encryptedRefreshToken, String accessToken) {
+    public String logout(String encryptedRefreshToken) {
         this.isTokenPresent(encryptedRefreshToken);
+        //RT가 레디스에 저장된값이랑 일치하는지 확인
+        String userId = redisService.getValues(encryptedRefreshToken);
+        if (!redisService.checkExistsValue(userId)) {
+            throw new IncorrectRefreshTokenException();
+        }
+        //RT 를 레디스에서 삭제
+        redisService.deleteValues(encryptedRefreshToken);
 
         String result = addToBlacklist(encryptedRefreshToken);
         return result;
@@ -45,7 +54,8 @@ public class UserService {
     private String addToBlacklist(String encryptedRefreshToken) {
         String blacklistKey = encryptedRefreshToken;
 
-        redisService.setValues(blacklistKey, "blacklist");
+        redisService.setValues(blacklistKey, "blacklist", Duration.ofMillis(60 * 60 * 100L));
+
         return "blaklist " + blacklistKey;
     }
 
@@ -66,7 +76,8 @@ public class UserService {
     }
 
     private String getAccessToken( User user) {
-        return jwtUtil.createJwt(user.getUserId(), user.getPassword(), 86400000 * 7L);
+        //6분간 유지되는 AT 재발급
+        return jwtUtil.createJwt(user.getUserId(), user.getPassword(), 60 * 60 * 100L);
     }
 
     private static String getBearerSubstring(String encryptedRefreshToken) {
