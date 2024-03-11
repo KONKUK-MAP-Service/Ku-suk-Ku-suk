@@ -236,6 +236,11 @@ public class UserService {
 
         userRepository.delete(user);
     }
+    public UserProfileResponse getCurrentUserProfile() {
+        String userId = getUsernameBySecurityContext();
+        User user = findMemberByUsername(userId);
+        return UserProfileResponse.of(user);
+    }
 
 
 }

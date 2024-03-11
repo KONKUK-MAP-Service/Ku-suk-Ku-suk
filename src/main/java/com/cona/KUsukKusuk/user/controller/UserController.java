@@ -17,6 +17,7 @@ import com.cona.KUsukKusuk.user.dto.UserProfileResponse;
 import com.cona.KUsukKusuk.user.exception.PasswordNotMatchException;
 import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("users")
+@Tag(name = "UserController", description = "유저 도메인에 대한 컨트롤러 입니다.")
+
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -112,5 +115,12 @@ public class UserController {
 
         return HttpResponse.okBuild("회원 탈퇴가 성공적으로 진행되었습니다.");
     }
+    @GetMapping("/profile/current")
+    @Operation(summary = "현재 로그인한 사용자 정보 조회", description = "현재 로그인한 사용자의 정보를 조회합니다.")
+    public HttpResponse<UserProfileResponse> getCurrentUserProfile() {
+        UserProfileResponse userProfile = userService.getCurrentUserProfile();
+        return HttpResponse.okBuild(userProfile);
+    }
+
 
 }
