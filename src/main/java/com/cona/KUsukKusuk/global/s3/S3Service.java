@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.cona.KUsukKusuk.user.domain.User;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,7 +82,26 @@ public class S3Service {
         }
         return null;
     }
+    public List<String> uploadImages(List<MultipartFile> files, String userId) throws IOException {
+        String folderName = userId + "/";  // 사용자별 폴더 생성
+        List<String> urls = new ArrayList<>();
 
+        for (MultipartFile file : files) {
+            String originalFilename = file.getOriginalFilename();
+            String storedFileName = folderName + generateUniqueFileName(originalFilename);
 
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+
+            amazonS3.putObject(new PutObjectRequest(bucket, storedFileName, file.getInputStream(), metadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+
+            String imageUrl = amazonS3.getUrl(bucket, storedFileName).toString();
+            urls.add(imageUrl);
+        }
+
+        return urls;
+    }
 
 }

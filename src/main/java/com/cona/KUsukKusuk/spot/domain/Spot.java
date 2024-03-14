@@ -7,6 +7,7 @@ import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.picture.Picture;
 import com.cona.KUsukKusuk.user.domain.User;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -54,6 +55,9 @@ public class Spot extends BaseEntity {
     private String latitude;
     @Column(nullable = false)
     private String review;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> imageUrls;
 
     @Column(nullable = true)
     private Long likes;

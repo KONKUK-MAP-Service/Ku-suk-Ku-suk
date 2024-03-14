@@ -167,7 +167,7 @@ public class UserService {
             throw new PasswordNotMatchException();
         }
     }
-    public User findMemberByUsername(String username) {
+    public User findUserByUserid(String username) {
         return userRepository.findByUserId(username)
                 .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
     }
@@ -178,7 +178,7 @@ public class UserService {
                 });
     }
     public User updateUserProfile(String userId, UpdateUserProfileRequest request) {
-        User currentUser = findMemberByUsername(userId);
+        User currentUser = findUserByUserid(userId);
 
         if (!currentUser.getNickname().equals(request.nickname())) {
             userRepository.findByNickname(request.nickname())
@@ -212,7 +212,7 @@ public class UserService {
     }
     @Transactional
     public void deleteUser(String userId) {
-        User user = findMemberByUsername(userId);
+        User user = findUserByUserid(userId);
 
         // 댓글 삭제
         List<Comment> commentsToDelete = user.getComments();
@@ -238,7 +238,7 @@ public class UserService {
     }
     public UserProfileResponse getCurrentUserProfile() {
         String userId = getUsernameBySecurityContext();
-        User user = findMemberByUsername(userId);
+        User user = findUserByUserid(userId);
         return UserProfileResponse.of(user);
     }
 
