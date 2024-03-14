@@ -38,10 +38,28 @@ spring:
     redis:
       host: ${redis_host}
       port: ${redis_port}
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 30MB
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
 
 logging:
   level:
     org.hibernate.SQL: info
 
-custom:
-  s3url : ${s3url}
+cloud:
+  aws:
+    credentials:
+      accessKey: ${s3_accesskey}
+      secretKey: ${s3_secretkey}
+    s3:
+      bucketName: ${s3_bucketname}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

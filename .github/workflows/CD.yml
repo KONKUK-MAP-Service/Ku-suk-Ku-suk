@@ -41,6 +41,9 @@ jobs:
           spring.data.redis.port: ${{secrets.REDIS_PORT}}
           spring.mail.username: ${{secrets.MAIL_USERNAME}}
           spring.mail.password: ${{secrets.MAIL_PASSWORD}}
+          cloud.aws.credentials.accessKey: ${{secrets.S3_ACCESSKEY}}
+          cloud.aws.credentials.secretKey: ${{secrets.S3_SECRETKEY}}
+          cloud.aws.s3.bucketName: ${{secrets.S3_BUCKETNAME}}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew

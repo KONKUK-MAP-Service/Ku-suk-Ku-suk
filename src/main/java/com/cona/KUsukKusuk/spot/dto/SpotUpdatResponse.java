@@ -1,17 +1,16 @@
 package com.cona.KUsukKusuk.spot.dto;
 
 import com.cona.KUsukKusuk.spot.domain.Spot;
-import com.cona.KUsukKusuk.user.domain.User;
-import com.cona.KUsukKusuk.user.dto.UserJoinResponse;
 import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record SpotJoinResponse(
-        Long spotid,String spotName, List<String> images, String longtitude, String latitude, String review
+public record SpotUpdatResponse(
+        Long spotid, String spotName, List<String> images, String longtitude, String latitude, String review
+
 ) {
-    public static SpotJoinResponse of(Spot spot){
-        return SpotJoinResponse.builder()
+    public static SpotUpdatResponse of(Spot spot){
+        return SpotUpdatResponse.builder()
                 .spotid(spot.getId())
                 .spotName(spot.getSpotName())
                 .images(spot.getImageUrls())

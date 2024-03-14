@@ -1,22 +1,25 @@
 package com.cona.KUsukKusuk.spot.dto;
 
 import com.cona.KUsukKusuk.spot.domain.Spot;
-import com.cona.KUsukKusuk.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
-public record SpotJoinRequest (
+public record SpotUploadRequest(
     @NotNull(message = "장소명은 필수 입력값입니다.")
-    @Schema(description = "장소명", nullable = false, example = "")
+    @Schema(description = "장소명", nullable = false, example = "건대 중문 !")
     String spotName,
     @NotNull(message = "경도 값은 필수 입력값입니다.")
-    @Schema(description = "경도 값", nullable = false, example = "")
+    @Schema(description = "경도 값", nullable = false, example = "33.450701")
     String longitude,
+
+
     @NotNull(message = "위도 값은 필수 입력값입니다.")
-    @Schema(description = "위도 값", nullable = false, example = "")
+    @Schema(description = "위도 값", nullable = false, example = "126.570667")
     String latitude,
-    @NotNull(message = "리뷰는 필수 입력값입니다.")
-    @Schema(description = "리뷰", nullable = false, example = "")
+    @NotNull(message = "리뷰(설명) 필수 입력값입니다.")
+    @Schema(description = "리뷰(설명)", nullable = false, example = "건대 길냥이가 너무 많아용 ㅎㅎㅎ")
     String review
 )
 {
@@ -28,4 +31,5 @@ public record SpotJoinRequest (
                 .review(review)
                 .build();
     }
+
 }
