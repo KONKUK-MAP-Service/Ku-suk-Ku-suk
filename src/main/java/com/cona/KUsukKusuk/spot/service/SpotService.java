@@ -2,6 +2,8 @@ package com.cona.KUsukKusuk.spot.service;
 
 import com.cona.KUsukKusuk.global.s3.S3Service;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
+import com.cona.KUsukKusuk.spot.dto.SpotJoinResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
@@ -11,6 +13,7 @@ import com.cona.KUsukKusuk.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -40,8 +43,17 @@ public class SpotService {
         user.getSpots().add(spot);
 
         Spot savedSpot = spotRepository.save(spot);
-        User save = userRepository.save(user);
+        userRepository.save(user)
         return savedSpot;
+    }
+    public List<SpotGetResponse> getAllSpots() {
+        String userId = userService.getUsernameBySecurityContext();
+        User user = userService.findUserByUserid(userId);
+
+        List<Spot> spots = spotRepository.findAll();
+        return spots.stream()
+                .map(spot -> SpotGetResponse.of(spot, spot.getUser().equals(user)))
+                .collect(Collectors.toList());
     }
 
 
