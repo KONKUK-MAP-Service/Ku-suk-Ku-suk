@@ -10,14 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 public record SpotUpdateRequest (
-     Long id,
 
      String spotName,
 
-     List<String> images,
-
-    @Schema(description = "사진, api 요청시 'Content-Type': 'multipart/form-data' 으로 요청을 보내야 합니다. ", example = "'Content-Type': 'multipart/form-data'")
-     List<MultipartFile> Images,
 
 
      String review

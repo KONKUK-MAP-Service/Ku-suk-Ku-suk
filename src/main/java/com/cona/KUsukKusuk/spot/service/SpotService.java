@@ -45,7 +45,6 @@ public class SpotService {
         String userId = userService.getUsernameBySecurityContext();
         User user = userService.findUserByUserid(userId);
 
-        System.out.println("images = " + images.size());
         List<String> imageUrls = s3Service.uploadImages(images, userId);
 
         Spot spot = spotUploadRequest.toEntity();
@@ -82,7 +81,7 @@ public class SpotService {
                 .map(spot -> SpotGetResponse.of(spot, false))
                 .collect(Collectors.toList());
     }
-    public void updateSpot(Long spotId, SpotUpdateRequest spotUpdateRequest) throws IOException {
+    public Spot updateSpot(Long spotId,List<MultipartFile> images, SpotUpdateRequest spotUpdateRequest) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -97,12 +96,14 @@ public class SpotService {
         }
 
         s3Service.deleteSpotImages(spot,user);
-        s3Service.uploadImages(spotUpdateRequest.Images(),username);
+        List<String> imagesurl = s3Service.uploadImages(images, username);
+        spot.setImageUrls(imagesurl);
         spot.setSpotName(spotUpdateRequest.spotName());
         spot.setReview(spotUpdateRequest.review());
 
+        Spot saved = spotRepository.save(spot);
 
-        spotRepository.save(spot);
+        return saved;
     }
 
 

@@ -5,6 +5,7 @@ import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.dto.SpotDeleteResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
+import com.cona.KUsukKusuk.spot.dto.SpotUpdatResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotUpdateRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotJoinResponse;
@@ -43,7 +44,7 @@ public class SpotController {
     @Operation(summary = "비로그인 사용자 장소(마커) 전체조회", description = "로그인 하지 않은 사용자의 화면에 보이는 모든 장소를 조회합니다. ")
 
     public HttpResponse<List<SpotGetResponse>> getPublicAllSpots() throws IOException {
-        List<SpotGetResponse> spots = spotService.getAllSpots();
+        List<SpotGetResponse> spots = spotService.getAllPublicSpots();
         return HttpResponse.okBuild(spots);
 
     }
@@ -67,10 +68,12 @@ public class SpotController {
     @PutMapping("/{spotId}")
     @Operation(summary = "장소 수정", description = "로그인한 사용자가 등록한 장소를 수정합니다. 만약 본인의 장소가 아니면  400 애러가 발생합니다.")
 
-    public HttpResponse<String> updateSpot(@PathVariable Long spotId, @Valid @RequestBody SpotUpdateRequest spotUpdateRequest)
+    public HttpResponse<SpotUpdatResponse> updateSpot(@PathVariable Long spotId, @RequestPart (value= "multipartFileList", required = false) List<MultipartFile> multipartFileList, @RequestPart(value="update") SpotUpdateRequest spotUpdateRequest)
             throws IOException {
-        spotService.updateSpot(spotId, spotUpdateRequest);
-        return HttpResponse.okBuild("장소 업데이트가 성공적으로 이루어졌습니다.");
+        Spot updatedSpot = spotService.updateSpot(spotId, multipartFileList, spotUpdateRequest);
+        return HttpResponse.okBuild(
+                SpotUpdatResponse.of(updatedSpot)
+        );
     }
     @DeleteMapping("/{spotId}")
     @Operation(summary = "장소 삭제", description = "로그인한 사용자가 등록한 장소를 삭제합니다. 만약 본인의 장소가 아니면  400 애러가 발생합니다.")
