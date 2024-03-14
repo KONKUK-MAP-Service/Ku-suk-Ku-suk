@@ -105,6 +105,20 @@ public class SpotService {
     }
 
 
+    public void deleteSpot(Long spotId) {
+
+        String username = userService.getUsernameBySecurityContext();
+        User user = userService.findUserByUserid(username);
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new SpotNotFoundException());
+        if (!spot.getUser().equals(user)) {
+            throw new UserNotFoundException(HttpExceptionCode.USER_NOT_MATCH);
+        }
+
+        spotRepository.delete(spot);
+    }
+
+
 
 
 

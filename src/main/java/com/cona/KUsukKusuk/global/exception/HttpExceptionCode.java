@@ -39,7 +39,7 @@ public enum HttpExceptionCode {
     IMAGE_UPLOAD_FAILED(HttpStatus.NOT_FOUND, "이미지 업로드에 실패하였습니다."),
     SPOT_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 spot ID가 DB에 존재하지 않습니다."),
     USER_LOGIN_PERMIT_FAIL(HttpStatus.FORBIDDEN,"로그인한 사용자만 이용할 수 있습니다. "),
-    USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "해당 사용자가 작성한 글이 아닙니다."),
+    USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "해당 사용자가 작성한 글이 아닙니다.");
 
 
 

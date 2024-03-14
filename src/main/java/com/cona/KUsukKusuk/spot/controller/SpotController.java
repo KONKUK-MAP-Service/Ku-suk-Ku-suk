@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.spot.controller;
 
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.SpotDeleteResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotUpdateRequest;
@@ -65,6 +66,15 @@ public class SpotController {
             throws IOException {
         spotService.updateSpot(spotId, spotUpdateRequest);
         return HttpResponse.okBuild("장소 업데이트가 성공적으로 이루어졌습니다.");
+    }
+    @DeleteMapping("/{spotId}")
+    @Operation(summary = "장소 삭제", description = "로그인한 사용자가 등록한 장소를 삭제합니다. 만약 본인의 장소가 아니면  400 애러가 발생합니다.")
+
+    public HttpResponse<SpotDeleteResponse> deleteSpot(@PathVariable Long spotId) {
+        spotService.deleteSpot(spotId);
+        return HttpResponse.okBuild(
+                SpotDeleteResponse.of("장소삭제가 성공적으로 이루어졌습니다.")
+        );
     }
 
 }
