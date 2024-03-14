@@ -40,21 +40,22 @@ public class SpotService {
     private final S3Service s3Service;
 
 
-    public Spot uploadSpot(SpotUploadRequest spotUploadRequest) throws IOException {
+    public Spot uploadSpot(List<MultipartFile> images, SpotUploadRequest spotUploadRequest) throws IOException {
 
         String userId = userService.getUsernameBySecurityContext();
         User user = userService.findUserByUserid(userId);
 
-        List<MultipartFile> images = spotUploadRequest.Images();
+        System.out.println("images = " + images.size());
         List<String> imageUrls = s3Service.uploadImages(images, userId);
 
-        Spot spot = spotUploadRequest.toEntity(imageUrls);
+        Spot spot = spotUploadRequest.toEntity();
         spot.setUser(user);
+        spot.setImageUrls(imageUrls);
 
         user.getSpots().add(spot);
 
         Spot savedSpot = spotRepository.save(spot);
-        userRepository.save(user)
+        userRepository.save(user);
         return savedSpot;
     }
     public List<SpotGetResponse> getAllSpots() {

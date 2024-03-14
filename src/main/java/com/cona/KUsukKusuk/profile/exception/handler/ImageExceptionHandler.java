@@ -1,7 +1,8 @@
-package profile.exception.handler;
+package com.cona.KUsukKusuk.profile.exception.handler;
 
 
 import com.cona.KUsukKusuk.global.response.ErrorResponse;
+import com.cona.KUsukKusuk.profile.exception.ImageUploadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import profile.exception.ImageUploadException;
 
 @Slf4j
 @RestControllerAdvice

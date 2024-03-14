@@ -14,8 +14,6 @@ public record SpotUploadRequest(
     @Schema(description = "경도 값", nullable = false, example = "33.450701")
     String longitude,
 
-    @Schema(description = "사진, api 요청시 'Content-Type': 'multipart/form-data' 으로 요청을 보내야 합니다. ", example = "'Content-Type': 'multipart/form-data'")
-    List<MultipartFile> Images,
 
     @NotNull(message = "위도 값은 필수 입력값입니다.")
     @Schema(description = "위도 값", nullable = false, example = "126.570667")
@@ -25,13 +23,12 @@ public record SpotUploadRequest(
     String review
 )
 {
-    public Spot toEntity(List<String> images) {
+    public Spot toEntity() {
         return Spot.builder()
                 .spotName(spotName)
                 .longitude(longitude)
                 .latitude(latitude)
                 .review(review)
-                .imageUrls(images)
                 .build();
     }
 

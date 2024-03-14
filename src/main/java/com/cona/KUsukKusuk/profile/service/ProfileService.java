@@ -1,7 +1,8 @@
-package profile.service;
+package com.cona.KUsukKusuk.profile.service;
 
 
 import com.cona.KUsukKusuk.global.s3.S3Service;
+import com.cona.KUsukKusuk.profile.dto.UploadImage;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import profile.dto.UploadImage;
 
 @Service
 @RequiredArgsConstructor

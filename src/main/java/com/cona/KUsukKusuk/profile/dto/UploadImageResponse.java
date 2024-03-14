@@ -1,4 +1,4 @@
-package profile.dto;
+package com.cona.KUsukKusuk.profile.dto;
 
 import lombok.Builder;
 

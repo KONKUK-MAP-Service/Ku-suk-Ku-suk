@@ -1,21 +1,22 @@
-package profile.controller;
+package com.cona.KUsukKusuk.profile.controller;
 
 
 import com.cona.KUsukKusuk.global.response.HttpResponse;
+import com.cona.KUsukKusuk.profile.dto.UploadImage;
+import com.cona.KUsukKusuk.profile.exception.ImageUploadException;
+import com.cona.KUsukKusuk.profile.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import profile.dto.UploadImage;
-import profile.dto.UploadImageResponse;
-import profile.exception.ImageUploadException;
-import profile.service.ProfileService;
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/profile-image")
+@Tag(name = "프로필 사진 컨트롤러", description = "프로필 이미지 업로드/삭제 컨트롤러 입니다.")
+
 public class ProfileController {
     private final ProfileService profileService;
 

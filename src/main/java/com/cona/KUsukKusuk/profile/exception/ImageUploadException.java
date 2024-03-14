@@ -1,4 +1,4 @@
-package profile.exception;
+package com.cona.KUsukKusuk.profile.exception;
 
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import lombok.Getter;
