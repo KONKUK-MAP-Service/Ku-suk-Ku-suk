@@ -38,6 +38,10 @@ spring:
     redis:
       host: ${redis_host}
       port: ${redis_port}
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 30MB
 
 decorator:
   datasource:
