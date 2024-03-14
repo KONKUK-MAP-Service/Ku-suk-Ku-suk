@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.user.domain.User;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -102,6 +103,42 @@ public class S3Service {
         }
 
         return urls;
+    }
+
+    public List<String> updateImages(List<MultipartFile> files, String userId) throws IOException {
+        String folderName = userId + "/";  // 사용자별 폴더 생성
+        List<String> urls = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            String originalFilename = file.getOriginalFilename();
+            String storedFileName = folderName + generateUniqueFileName(originalFilename);
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+
+            amazonS3.putObject(new PutObjectRequest(bucket, storedFileName, file.getInputStream(), metadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+
+            String imageUrl = amazonS3.getUrl(bucket, storedFileName).toString();
+            urls.add(imageUrl);
+        }
+
+        return urls;
+    }
+
+
+    public void deleteSpotImages(Spot spot,User user) {
+
+        List<String> imageUrls = spot.getImageUrls();
+        if(!imageUrls.isEmpty()){
+            for (int i = 0; i < imageUrls.size(); i++) {
+                String spoturl = imageUrls.get(i);
+                String key = extractString(spoturl, user.getUserId());
+                amazonS3.deleteObject(bucket,key);
+            }
+
+        }
     }
 
 }

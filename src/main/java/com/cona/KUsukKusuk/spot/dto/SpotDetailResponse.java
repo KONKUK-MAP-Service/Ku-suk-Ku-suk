@@ -6,17 +6,17 @@ import lombok.Builder;
 
 @Builder
 public record SpotDetailResponse(Long spotId,
-                                 Boolean isUsersOwnSpot,
+
                                  String spotName,
                                  List<String> images,
                                  String longitude,
                                  String latitude,
                                  String review) {
 
-    public static SpotDetailResponse fromSpot(Spot spot, boolean isUsersOwnSpot) {
+    public static SpotDetailResponse fromSpot(Spot spot) {
         return SpotDetailResponse.builder()
                 .spotId(spot.getId())
-                .isUsersOwnSpot(isUsersOwnSpot)
+
                 .spotName(spot.getSpotName())
                 .images(spot.getImageUrls())
                 .longitude(spot.getLongitude())
