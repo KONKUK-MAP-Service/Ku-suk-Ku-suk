@@ -2,9 +2,11 @@ package com.cona.KUsukKusuk.spot.service;
 
 import com.cona.KUsukKusuk.global.s3.S3Service;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotJoinResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
+import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
@@ -55,6 +57,15 @@ public class SpotService {
                 .map(spot -> SpotGetResponse.of(spot, spot.getUser().equals(user)))
                 .collect(Collectors.toList());
     }
+    public SpotDetailResponse getSpotDetails(Long spotId) {
+        String userId = userService.getUsernameBySecurityContext();
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new SpotNotFoundException());
+
+        boolean isUsersOwnSpot = spot.getUser().getId().equals(userId);
+        return SpotDetailResponse.fromSpot(spot, isUsersOwnSpot);
+    }
+
 
 
 }

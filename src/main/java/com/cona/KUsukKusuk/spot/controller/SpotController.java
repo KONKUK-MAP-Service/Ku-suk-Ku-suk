@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.spot.controller;
 
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotJoinResponse;
@@ -37,6 +38,13 @@ public class SpotController {
         return HttpResponse.okBuild(spots);
 
     }
+    @GetMapping("/{spotId}")
+    public HttpResponse<SpotDetailResponse> getSpotDetails(@PathVariable Long spotId) {
+        SpotDetailResponse spotDetails = spotService.getSpotDetails(spotId);
+        return HttpResponse.okBuild(spotDetails);
+    }
+
+
 
 }
 

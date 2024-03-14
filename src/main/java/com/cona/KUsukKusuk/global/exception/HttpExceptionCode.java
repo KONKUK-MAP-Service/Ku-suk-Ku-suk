@@ -36,7 +36,8 @@ public enum HttpExceptionCode {
     EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT,"이미 존재하는 이메일 입니다."),
 
     EMAIL_NOT_SEND(HttpStatus.NOT_FOUND,"이메일이 전송에 실패하였습니다."),
-    IMAGE_UPLOAD_FAILED(HttpStatus.NOT_FOUND, "이미지 업로드에 실패하였습니다.");
+    IMAGE_UPLOAD_FAILED(HttpStatus.NOT_FOUND, "이미지 업로드에 실패하였습니다."),
+    SPOT_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 spot ID가 DB에 존재하지 않습니다.");
 
 
 
