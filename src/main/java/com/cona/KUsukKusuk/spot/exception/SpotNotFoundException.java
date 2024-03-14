@@ -15,7 +15,7 @@ public class SpotNotFoundException extends RuntimeException {
     }
 
     public SpotNotFoundException() {
-        this(HttpExceptionCode.IMAGE_UPLOAD_FAILED);
+        this(HttpExceptionCode.SPOT_NOT_FOUND);
     }
 
 

@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("users")
-@Tag(name = "UserController", description = "유저 도메인에 대한 컨트롤러 입니다.")
+@Tag(name = "유저 컨트롤러", description = "유저 도메인에 대한 컨트롤러 입니다.")
 
 @RequiredArgsConstructor
 public class UserController {

@@ -44,14 +44,22 @@ public class SpotService {
 
         String userId = userService.getUsernameBySecurityContext();
         User user = userService.findUserByUserid(userId);
-
-        List<String> imageUrls = s3Service.uploadImages(images, userId);
-
         Spot spot = spotUploadRequest.toEntity();
         spot.setUser(user);
-        spot.setImageUrls(imageUrls);
 
         user.getSpots().add(spot);
+
+
+
+            if(!images.get(0).isEmpty()){
+
+                System.out.println("images size= " + images.size());
+
+                List<String> imageUrls = s3Service.uploadImages(images, userId);
+                spot.setImageUrls(imageUrls);
+            }
+
+
 
         Spot savedSpot = spotRepository.save(spot);
         userRepository.save(user);
@@ -95,9 +103,13 @@ public class SpotService {
             throw new UserNotFoundException(HttpExceptionCode.USER_NOT_MATCH);
         }
 
-        s3Service.deleteSpotImages(spot,user);
-        List<String> imagesurl = s3Service.uploadImages(images, username);
-        spot.setImageUrls(imagesurl);
+        if (!images.get(0).isEmpty()) {
+            //이미지가 존재할 경우
+            s3Service.deleteSpotImages(spot,user);
+            List<String> imagesurl = s3Service.uploadImages(images, username);
+            spot.setImageUrls(imagesurl);
+        }
+
         spot.setSpotName(spotUpdateRequest.spotName());
         spot.setReview(spotUpdateRequest.review());
 
@@ -116,6 +128,7 @@ public class SpotService {
         if (!spot.getUser().equals(user)) {
             throw new UserNotFoundException(HttpExceptionCode.USER_NOT_MATCH);
         }
+        s3Service.deleteSpotImages(spot,user);
 
         spotRepository.delete(spot);
     }

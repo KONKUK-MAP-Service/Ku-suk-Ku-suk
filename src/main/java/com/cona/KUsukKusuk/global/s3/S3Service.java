@@ -129,6 +129,7 @@ public class S3Service {
 
 
     public void deleteSpotImages(Spot spot,User user) {
+        //현재 url에서 키 값을 추출해서 그대로 해당 키의 버킷 객체를
 
         List<String> imageUrls = spot.getImageUrls();
         if(!imageUrls.isEmpty()){
