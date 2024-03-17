@@ -2,8 +2,8 @@ package com.cona.KUsukKusuk.user.service;
 
 import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
 import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
-import com.cona.KUsukKusuk.comment.Comment;
-import com.cona.KUsukKusuk.comment.repository.CommentRepositofy;
+import com.cona.KUsukKusuk.comment.domain.Comment;
+import com.cona.KUsukKusuk.comment.repository.CommentRepository;
 import com.cona.KUsukKusuk.email.service.EmailService;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.exception.custom.security.IncorrectRefreshTokenException;
@@ -37,7 +37,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final CommentRepositofy commentRepository;
+    private final CommentRepository commentRepository;
     private final SpotRepository spotRepository;
     private final UserLikeRepository userLikeRepository;
     private final BookmarkRepository bookmarkRepository;
