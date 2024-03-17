@@ -16,7 +16,7 @@ public class CommentJoinRequest {
 
     // 생성자, getter 등 추가
 
-    public Comment toEntity(User u, Optional<Spot> s) {
+    public Comment toEntity(User u, Spot s) {
         return Comment.builder()
                 .user(u)
                 .spot(s)

@@ -28,7 +28,7 @@ public class CommentController {
     public HttpResponse<CommentJoinResponse> saveComment(@PathVariable("spotId") Long spotId, @RequestBody CommentJoinRequest commentJoinRequest){
         //user, spot 가져오기 - 수정 필요
         User user = commentService.getCurrentUser();
-        Optional<Spot> spot = commentService.getCurrentSpot(spotId);
+        Spot spot = commentService.getCurrentSpot(spotId);
         //위 user, spot 사용해서 comment 객체 만들기
         Comment comment = commentJoinRequest.toEntity(user, spot);
         Comment savedComment = commentService.save(comment);
