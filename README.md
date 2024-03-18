@@ -1,3 +1,65 @@
+## 🧼 쿠석쿠석을 소개합니다 ! 🛵
+
+<p align="center">
+    <img src="https://github.com/KONKUK-MAP-Service/.github/assets/58305106/f248596f-c515-472b-9e82-be211ca0f64c" alt="pick-git-logo" width="620" height="320">
+</p>
+
+<div align="center">
+
+건대생들이 구석구석 함께 만들어 가는 지도
+나만의 장소를 공유해 보세요.
+
+  💻 건대의 모든 장소 ! 장소공유 서비스, <br>
+  🖋 [KU -SUK KU -SUK]()
+
+</div>
+<br>
+
+## 🐷 프로젝트 소개
+건대근처의 다양한 추억들을 사진으로 남기고 공유하는 목적으로 하는 웹서비스입니다 !
+ 
+- 건대생들만의 장소공유 서비스가 부재하다는 <a href="https://github.com/ulsandonghun">동훈</a>님의 아이디어에서 출발했어요 ! 
+- 다중 사진 업로드 기능을 통해 최대 5장 까지 20 MB의 고화질사진을 아주 빠르게 업로드 할 수 있어요 !
+- 건대 위치기반 서비스 를 통해 메인화면 진입시 건대 주변의 위치정보와 사진정보들을 보이게 했어요 !
+- 자유로운 댓글과 좋아요 찜 기능 을 통해 건대생들의 아기자기한 추억들을 남기고자 시작했어요 ! 
+
+<br>
+<br/>
+
+## 👩‍💻 백엔드 구성
+<table>
+<tr height="140px">
+    <td align="center" width="130px">
+        멤버
+    </td>
+        <td align="center" width="130px">
+        <a href="https://github.com/ulsandonghun"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/ulsandonghun"/></a>
+        <br />
+        <a href="https://github.com/ulsandonghun">최동훈</a>
+    </td>
+    <td align="center" width="130px">
+        <a href="https://github.com/Hyeri1ee"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/Hyeri1ee"/></a>
+        <br />
+        <a href="https://github.com/Hyeri1ee">이혜리</a>
+    </td>
+
+
+</tr>
+<tr>
+    <td align="center" width="130px">
+        기여
+    </td>
+     <td align="center" width="130px">
+        팀장, BE
+    </td>
+    <td align="center" width="130px">
+        BE
+    </td>
+   
+
+</tr>
+</table>
+
 ###  쿠석쿠석 
 
 건국대학교의 모든 장소를 공유하는 '쿠석쿠석' 서비스입니다.
