@@ -1,10 +1,12 @@
 package com.cona.KUsukKusuk.bookmark.controller;
 
+import com.cona.KUsukKusuk.bookmark.dto.BookmarkDeleteRequest;
 import com.cona.KUsukKusuk.bookmark.dto.BookmarkRequest;
 import com.cona.KUsukKusuk.bookmark.service.BookmarkService;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +24,11 @@ public class BookmarkController {
     public HttpResponse<String> addBookmark(@RequestBody BookmarkRequest request) {
         bookmarkService.addBookmark(request.spotId());
         return HttpResponse.okBuild("장소를 북마크했습니다.");
+    }
+
+    @DeleteMapping("/delete")
+    public HttpResponse<String> deleteBookmark(@RequestBody BookmarkDeleteRequest request) {
+        bookmarkService.deleteBookmark(request.bookmarkId());
+        return HttpResponse.okBuild("장소 북마크를 삭제했습니다.");
     }
 }
