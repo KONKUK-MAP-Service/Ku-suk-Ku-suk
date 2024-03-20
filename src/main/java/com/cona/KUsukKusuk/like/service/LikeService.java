@@ -3,6 +3,7 @@ package com.cona.KUsukKusuk.like.service;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.like.dto.LikeRequest;
+import com.cona.KUsukKusuk.like.dto.UnlikeRequest;
 import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
@@ -32,6 +33,11 @@ public class LikeService {
         userLike.setUser(user);
         userLike.setSpot(spot);
         userLikeRepository.save(userLike);
+    }
+    public void removeLike(UnlikeRequest unlikeDto) {
+
+        userLikeRepository.deleteById(unlikeDto.bookmarkId());
+
     }
 
 
