@@ -65,7 +65,13 @@
 건국대학교의 모든 장소를 공유하는 '쿠석쿠석' 서비스입니다.
 ### 서버 아키텍쳐 
 
-![image](https://github.com/KONKUK-MAP-Service/Ku-suk-Ku-suk/assets/58305106/c31cc2b0-6ba7-44a3-8af5-e2ebbb08e368)
+
+![image](https://github.com/KONKUK-MAP-Service/Ku-suk-Ku-suk/assets/58305106/fc52e744-a83a-446d-b052-04dc14b198ec)
+
+### 사용 기술
+![image](https://github.com/KONKUK-MAP-Service/Ku-suk-Ku-suk/assets/58305106/5eaf1ed6-8c62-47be-b8e7-c6461eacfce0)
+
+
 
 
 ## 데이터베이스 모델링
