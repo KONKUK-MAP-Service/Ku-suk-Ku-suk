@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.like;
 
+import com.cona.KUsukKusuk.global.domain.BaseEntity;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.user.domain.User;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserLike {
+public class UserLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
