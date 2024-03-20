@@ -20,6 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+
 public class UserLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
