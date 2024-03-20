@@ -1,19 +1,19 @@
-package com.cona.KUsukKusuk.bookmark.exception;
+package com.cona.KUsukKusuk.like.exception;
 
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 @Getter
-public class BookmarkException extends RuntimeException {
+public class LikeException extends RuntimeException{
     private final HttpStatus httpStatus;
 
-    public BookmarkException(HttpExceptionCode exceptionCode) {
+    public LikeException(HttpExceptionCode exceptionCode) {
         super(exceptionCode.getMessage());
         this.httpStatus = exceptionCode.getHttpStatus();
     }
 
-    public BookmarkException() {
-        this(HttpExceptionCode.BOOK_MARK_ERR);
+    public LikeException() {
+        this(HttpExceptionCode.LIKE_ERR);
     }
 
 }
