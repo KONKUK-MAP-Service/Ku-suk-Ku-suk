@@ -123,6 +123,8 @@ public class UserController {
         return HttpResponse.okBuild(userProfile);
     }
     @GetMapping("/bookmarks")
+    @Operation(summary = "사용자 북마크 조회", description = "로그인한 사용자의 등록한 북마크 조회를 수행합니다.")
+
     public HttpResponse<List<BookmarkResponseDto>> getUserBookmarks() {
         List<BookmarkResponseDto> bookmarks = bookmarkService.getUserBookmarks();
         return HttpResponse.okBuild(bookmarks);
