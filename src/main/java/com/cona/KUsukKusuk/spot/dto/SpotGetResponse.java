@@ -3,6 +3,7 @@ package com.cona.KUsukKusuk.spot.dto;
 import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 
@@ -15,7 +16,8 @@ public record SpotGetResponse(
         List<String>images,
        String longtitude,
         String latitude,
-         String review
+         String review,
+        LocalDateTime createDate
 ) {
     public static SpotGetResponse of(Spot spot,Boolean bool) {
         return SpotGetResponse.builder()
@@ -26,6 +28,7 @@ public record SpotGetResponse(
                 .longtitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())
+                .createDate(spot.getCreatedDate())
                 .build();
     }
 }
