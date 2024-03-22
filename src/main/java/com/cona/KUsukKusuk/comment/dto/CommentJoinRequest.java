@@ -12,15 +12,22 @@ public class CommentJoinRequest {
 
     @NotNull(message = "댓글은 필수 입력값입니다.")
     @Schema(description = "댓글", nullable = false, example = "")
-    String comments;
+    String comment;
 
     // 생성자, getter 등 추가
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public Comment toEntity(User u, Spot s) {
         return Comment.builder()
                 .user(u)
                 .spot(s)
-                .comment(comments)
+                .comment(comment)
                 .build();
     }
 

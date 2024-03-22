@@ -30,7 +30,9 @@ public class CommentController {
         User user = commentService.getCurrentUser();
         Spot spot = commentService.getCurrentSpot(spotId);
         //위 user, spot 사용해서 comment 객체 만들기
+        System.out.println("user, spot 까지 담기 완료");
         Comment comment = commentJoinRequest.toEntity(user, spot);
+        System.out.println("comment 객체 생성 완료");
         Comment savedComment = commentService.save(comment);
         return  HttpResponse.okBuild(
                 CommentJoinResponse.of(savedComment));

@@ -30,8 +30,8 @@ public class CommentService {
     }
 
     public User getCurrentUser() {
-        String userId = userService.getUsernameBySecurityContext();
-        User user = userService.findUserByUserid(userId);
+        String name = userService.getUsernameBySecurityContext();
+        User user = userService.findUserByUserid(name);
         return user;
     }
 
