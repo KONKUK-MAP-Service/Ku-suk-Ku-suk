@@ -42,8 +42,9 @@ public class SpotService {
 
     public Spot uploadSpot(List<MultipartFile> images, SpotUploadRequest spotUploadRequest) throws IOException {
 
-        String userId = userService.getUsernameBySecurityContext();
-        User user = userService.findUserByUserid(userId);
+        String name = userService.getUsernameBySecurityContext(); //요 부분이 name을 못 받아옴.
+        String userId = getUserIdByName(name);
+        User user = userService.findUserByUserid(name);
         Spot spot = spotUploadRequest.toEntity();
         spot.setUser(user);
 
@@ -65,6 +66,21 @@ public class SpotService {
         userRepository.save(user);
         return savedSpot;
     }
+
+    private String getUserIdByName(String name) {
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            if (user.getNickname().equals(name)) {
+                return user.getId().toString();
+            }
+        }
+
+        // 이름과 일치하는 Spot이 없는 경우 처리
+        return null;
+
+    }
+
     public List<SpotGetResponse> getAllSpots() {
         String userId = userService.getUsernameBySecurityContext();
         User user = userService.findUserByUserid(userId);

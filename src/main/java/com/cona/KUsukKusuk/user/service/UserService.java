@@ -2,8 +2,8 @@ package com.cona.KUsukKusuk.user.service;
 
 import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
 import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
-import com.cona.KUsukKusuk.comment.Comment;
-import com.cona.KUsukKusuk.comment.repository.CommentRepositofy;
+import com.cona.KUsukKusuk.comment.domain.Comment;
+import com.cona.KUsukKusuk.comment.repository.CommentRepository;
 import com.cona.KUsukKusuk.email.service.EmailService;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.exception.custom.security.IncorrectRefreshTokenException;
@@ -37,7 +37,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final CommentRepositofy commentRepository;
+    private final CommentRepository commentRepository;
     private final SpotRepository spotRepository;
     private final UserLikeRepository userLikeRepository;
     private final BookmarkRepository bookmarkRepository;
@@ -99,7 +99,6 @@ public class UserService {
         String pureRefreshToken = getBearerSubstring(encryptedRefreshToken);
         //redis에서 해당 키 검색해서 해당 토큰에 대응하는 key 추출
         String userId = redisService.getValues(pureRefreshToken);
-
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(UserNotFoundException::new);
 
