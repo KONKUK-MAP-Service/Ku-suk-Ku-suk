@@ -99,7 +99,6 @@ public class UserService {
         String pureRefreshToken = getBearerSubstring(encryptedRefreshToken);
         //redis에서 해당 키 검색해서 해당 토큰에 대응하는 key 추출
         String userId = redisService.getValues(pureRefreshToken);
-
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(UserNotFoundException::new);
 

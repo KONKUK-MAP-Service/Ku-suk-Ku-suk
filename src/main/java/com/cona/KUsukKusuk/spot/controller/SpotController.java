@@ -36,6 +36,7 @@ public class SpotController {
                                                    @RequestPart(value = "posting") SpotUploadRequest spotUploadRequest) throws IOException {
 
         Spot savedSpot = spotService.uploadSpot(multipartFileList, spotUploadRequest);
+
         return HttpResponse.okBuild(
                 SpotJoinResponse.of(savedSpot)
         );
