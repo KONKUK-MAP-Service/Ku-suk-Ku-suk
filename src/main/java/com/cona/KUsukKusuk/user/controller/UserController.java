@@ -1,7 +1,13 @@
 package com.cona.KUsukKusuk.user.controller;
 
+import com.cona.KUsukKusuk.bookmark.dto.BookmarkResponseDto;
+import com.cona.KUsukKusuk.bookmark.dto.UserBookmarkResponse;
+import com.cona.KUsukKusuk.bookmark.service.BookmarkService;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.security.JWTUtil;
+import com.cona.KUsukKusuk.like.UserLike;
+import com.cona.KUsukKusuk.like.dto.LikeResponseDto;
+import com.cona.KUsukKusuk.like.service.LikeService;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.CheckPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordRequest;
@@ -19,6 +25,7 @@ import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
     private final JWTUtil jwtUtil;
+    private final BookmarkService bookmarkService;
+    private final LikeService likeService;
 
     @PostMapping("/join")
     @Operation(summary = "회원가입", description = "회원가입을 수행합니다.")
@@ -116,6 +125,20 @@ public class UserController {
     public HttpResponse<UserProfileResponse> getCurrentUserProfile() {
         UserProfileResponse userProfile = userService.getCurrentUserProfile();
         return HttpResponse.okBuild(userProfile);
+    }
+    @GetMapping("/bookmarks")
+    @Operation(summary = "사용자 북마크 조회", description = "로그인한 사용자의 등록한 북마크 조회를 수행합니다.")
+
+    public HttpResponse<List<BookmarkResponseDto>> getUserBookmarks() {
+        List<BookmarkResponseDto> bookmarks = bookmarkService.getUserBookmarks();
+        return HttpResponse.okBuild(bookmarks);
+    }
+    @GetMapping("/likes")
+    @Operation(summary = "사용자 좋아요 조회", description = "로그인한 사용자의 등록한 좋아요 조회를 수행합니다.")
+
+    public HttpResponse<List<LikeResponseDto>> getUserLikes() {
+        List<LikeResponseDto> userLikes = likeService.getUserLikes();
+        return HttpResponse.okBuild(userLikes);
     }
 
 
