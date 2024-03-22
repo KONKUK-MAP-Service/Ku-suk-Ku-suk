@@ -3,11 +3,17 @@ package com.cona.KUsukKusuk.comment.controller;
 import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.comment.dto.CommentJoinRequest;
 import com.cona.KUsukKusuk.comment.dto.CommentJoinResponse;
+import com.cona.KUsukKusuk.comment.dto.CommentUpdateRequest;
+import com.cona.KUsukKusuk.comment.dto.CommentUpdateResponse;
+import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
+import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
 import com.cona.KUsukKusuk.comment.service.CommentService;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.apache.http.protocol.HTTP;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -17,10 +23,12 @@ import java.util.Optional;
 @RequestMapping("comment")
 public class CommentController {
     final private CommentService commentService;
+    final private UserService userService;
     private CommentJoinRequest CommentJoinRequest;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, UserService userService) {
         this.commentService = commentService;
+        this.userService = userService;
     }
 
     @PostMapping("/{spotId}/register")
@@ -36,6 +44,22 @@ public class CommentController {
         Comment savedComment = commentService.save(comment);
         return  HttpResponse.okBuild(
                 CommentJoinResponse.of(savedComment));
+    }
+
+    @PostMapping("/{spotId}/{commentId}/update")
+    @Operation(summary = "특정 장소 글의 댓글 수정", description = "로그인한 사용자의 자신의 댓글을 수정합니다.")
+    public HttpResponse<CommentUpdateResponse> updateComment(@PathVariable("spotId")Long spotId, @PathVariable("commentId")Long commentId, @RequestBody CommentUpdateRequest commentUpdateRequest) throws CommentNotFoundException, CommentUserNotMatchedException {
+
+        String commentUserName = userService.getUsernameBySecurityContext();
+
+        Spot spot = commentService.getCurrentSpot(spotId);
+        Comment updateComment = commentService.getCurrentComment(commentUserName,spot,commentId);//요기 함수 부분 작업중
+        updateComment.setComment(commentUpdateRequest.comment());
+
+        Comment savedComment = commentService.save(updateComment);
+        return HttpResponse.okBuild(
+                CommentUpdateResponse.of(updateComment)
+        );
     }
 
 

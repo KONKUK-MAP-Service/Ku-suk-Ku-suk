@@ -1,6 +1,8 @@
 package com.cona.KUsukKusuk.comment.service;
 
 import com.cona.KUsukKusuk.comment.domain.Comment;
+import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
+import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
 import com.cona.KUsukKusuk.comment.repository.CommentRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
@@ -11,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +43,29 @@ public class CommentService {
                 .orElseThrow(() -> new SpotNotFoundException());
         return spot;
     }
+
+    public Comment getCurrentComment(String commentUserName , Spot spot, Long commentId) throws CommentNotFoundException, CommentUserNotMatchedException {
+        List<Comment> commentList = spot.getComments();
+        Comment wantToUpdate = null; // 초기화를 null로 설정
+        for (Comment comment : commentList) {
+            if (comment.getId().equals(commentId)) { // spot 내의 comment인지 확인
+                wantToUpdate = comment;
+                break; // 원하는 comment를 찾았으므로 루프 종료
+            }
+        }
+
+        // wantToUpdate가 여전히 null인 경우 예외 처리
+        if (wantToUpdate == null) {
+            throw new CommentNotFoundException("Comment with id: " + commentId + " not found.");
+        }
+
+        //commentUserName과 comment의 작성자 일치 확인
+        if (wantToUpdate.getUser().getNickname().equals(commentUserName))
+            return wantToUpdate;
+        else
+            throw new CommentUserNotMatchedException("Don't have authority to update the comment.");
+
+    }
+
 }
 
