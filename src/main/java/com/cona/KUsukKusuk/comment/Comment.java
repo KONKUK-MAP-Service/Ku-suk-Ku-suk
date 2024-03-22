@@ -1,4 +1,4 @@
-package com.cona.KUsukKusuk.comment.domain;
+package com.cona.KUsukKusuk.comment;
 
 import com.cona.KUsukKusuk.global.domain.BaseEntity;
 import com.cona.KUsukKusuk.spot.domain.Spot;
@@ -10,14 +10,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@NoArgsConstructor
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,7 @@
 package com.cona.KUsukKusuk.spot.domain;
 
 import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
-import com.cona.KUsukKusuk.comment.domain.Comment;
+import com.cona.KUsukKusuk.comment.Comment;
 import com.cona.KUsukKusuk.global.domain.BaseEntity;
 import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.picture.Picture;
