@@ -1,10 +1,7 @@
 package com.cona.KUsukKusuk.comment.controller;
 
 import com.cona.KUsukKusuk.comment.domain.Comment;
-import com.cona.KUsukKusuk.comment.dto.CommentJoinRequest;
-import com.cona.KUsukKusuk.comment.dto.CommentJoinResponse;
-import com.cona.KUsukKusuk.comment.dto.CommentUpdateRequest;
-import com.cona.KUsukKusuk.comment.dto.CommentUpdateResponse;
+import com.cona.KUsukKusuk.comment.dto.*;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
 import com.cona.KUsukKusuk.comment.service.CommentService;
@@ -13,10 +10,7 @@ import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.apache.http.protocol.HTTP;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 
 @RestController
@@ -53,12 +47,26 @@ public class CommentController {
         String commentUserName = userService.getUsernameBySecurityContext();
 
         Spot spot = commentService.getCurrentSpot(spotId);
-        Comment updateComment = commentService.getCurrentComment(commentUserName,spot,commentId);//요기 함수 부분 작업중
+        Comment updateComment = commentService.getCurrentComment(commentUserName,spot,commentId);
         updateComment.setComment(commentUpdateRequest.comment());
 
         Comment savedComment = commentService.save(updateComment);
         return HttpResponse.okBuild(
                 CommentUpdateResponse.of(updateComment)
+        );
+    }
+
+    @GetMapping("/{spotId}/{commentId}/delete")
+    @Operation(summary = "특정 장소 글의 댓글 삭제" , description = "로그인한 사용자의 자신의 댓글을 삭제합니다.")
+    public HttpResponse<CommentDeleteResponse> deleteComment(@PathVariable("spotId")Long spotId, @PathVariable("commentId")Long commentId) throws CommentNotFoundException, CommentUserNotMatchedException {
+
+        String commentUserName = userService.getUsernameBySecurityContext();
+        Spot spot = commentService.getCurrentSpot(spotId);
+        Comment comment = commentService.getCurrentComment(commentUserName,spot,commentId);
+
+        commentService.delete(comment);
+        return HttpResponse.okBuild(
+                CommentDeleteResponse.of("댓글이 삭제 되었습니다.")
         );
     }
 
