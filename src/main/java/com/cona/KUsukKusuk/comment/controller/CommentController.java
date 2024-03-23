@@ -46,6 +46,7 @@ public class CommentController {
 
         String commentUserName = userService.getUsernameBySecurityContext();
 
+
         Spot spot = commentService.getCurrentSpot(spotId);
         Comment updateComment = commentService.getCurrentComment(commentUserName,spot,commentId);
         updateComment.setComment(commentUpdateRequest.comment());

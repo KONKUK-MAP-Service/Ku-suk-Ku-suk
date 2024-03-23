@@ -26,7 +26,6 @@ public class CommentService {
         this.spotRepository = spotRepository;
         this.userService = userService;
     }
-
     public Comment save(Comment comment) {
         Comment savedComment = commentRepository.save(comment);
         return savedComment;
@@ -71,4 +70,3 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 }
-
