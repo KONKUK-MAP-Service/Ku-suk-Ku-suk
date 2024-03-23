@@ -32,11 +32,10 @@ public class SpotController {
 
     @PostMapping("/register")
     @Operation(summary = "장소(마커) 등록", description = "로그인한 사용자의 장소를 등록합니다.")
-    public HttpResponse<SpotJoinResponse> saveSpot(@RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                                   @RequestPart(value = "posting") SpotUploadRequest spotUploadRequest) throws IOException {
+    public HttpResponse<SpotJoinResponse> saveSpot(@RequestPart (value= "multipartFileList", required = false) List<MultipartFile> multipartFileList,
+                                                   @RequestPart(value="posting") SpotUploadRequest spotUploadRequest) throws IOException {
 
-        Spot savedSpot = spotService.uploadSpot(multipartFileList, spotUploadRequest);
-
+        Spot savedSpot = spotService.uploadSpot(multipartFileList,spotUploadRequest);
         return HttpResponse.okBuild(
                 SpotJoinResponse.of(savedSpot)
         );
