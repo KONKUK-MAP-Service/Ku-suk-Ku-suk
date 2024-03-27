@@ -59,7 +59,7 @@ public class CommentService {
         }
 
         //commentUserName과 comment의 작성자 일치 확인
-        if (wantToUpdate.getUser().getNickname().equals(commentUserName))
+        if (wantToUpdate.getUser().getUserId().equals(commentUserName))
             return wantToUpdate;
         else
             throw new CommentUserNotMatchedException("Don't have authority to update the comment.");
