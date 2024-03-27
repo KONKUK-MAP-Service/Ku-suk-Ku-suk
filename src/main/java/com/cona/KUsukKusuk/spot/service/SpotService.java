@@ -1,8 +1,12 @@
 package com.cona.KUsukKusuk.spot.service;
 
+import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
+import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.s3.S3Service;
+import com.cona.KUsukKusuk.like.UserLike;
+import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
@@ -37,6 +41,8 @@ public class SpotService {
     private final SpotRepository spotRepository;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final UserLikeRepository userLikeRepository;
     private final S3Service s3Service;
 
 
@@ -68,25 +74,52 @@ public class SpotService {
     public List<SpotGetResponse> getAllSpots() {
         String userId = userService.getUsernameBySecurityContext();
         User user = userService.findUserByUserid(userId);
+        List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
+        List<UserLike> userLikes = userLikeRepository.findByUser(user);
 
         List<Spot> spots = spotRepository.findAll();
         return spots.stream()
-                .map(spot -> SpotGetResponse.of(spot, spot.getUser().equals(user)))
+                .map(spot -> {
+                    boolean isBookmarkedByUser = bookmarks != null && bookmarks.stream()
+                            .anyMatch(bookmark -> bookmark.getSpot().equals(spot));
+                    boolean isLikedByUser = userLikes != null && userLikes.stream()
+                            .anyMatch(like -> like.getSpot().equals(spot));
+                    return SpotGetResponse.of(spot, spot.getUser().equals(user), isBookmarkedByUser, isLikedByUser);
+                })
                 .collect(Collectors.toList());
     }
     public SpotDetailResponse getSpotDetails(Long spotId) {
+        String username = SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+
+        Boolean isBookmark=false;
+        Boolean isLike=true;
 
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new SpotNotFoundException());
 
+        if (!username.equals("anonymousUser")) {
+
+            User user = userService.findUserByUserid(username);
+            List<UserLike> userLikes = userLikeRepository.findByUser(user);
+            List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
+
+            isLike = userLikes != null && userLikes.stream().anyMatch(like -> like.getSpot().equals(spot));
+
+            isBookmark = bookmarks != null && bookmarks.stream().anyMatch(bookmark -> bookmark.getSpot().equals(spot));
+
+        }
+
+
+
         boolean isUsersOwnSpot = spot.getUser().getId().equals(false);
-        return SpotDetailResponse.fromSpot(spot);
+        return SpotDetailResponse.fromSpot(spot,isBookmark,isLike);
     }
     public List<SpotGetResponse> getAllPublicSpots() {
 
         List<Spot> spots = spotRepository.findAll();
         return spots.stream()
-                .map(spot -> SpotGetResponse.of(spot, false))
+                .map(spot -> SpotGetResponse.of(spot, false,false,false))
                 .collect(Collectors.toList());
     }
     public Spot updateSpot(Long spotId,List<MultipartFile> images, SpotUpdateRequest spotUpdateRequest) throws IOException {
