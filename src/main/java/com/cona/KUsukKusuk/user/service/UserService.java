@@ -33,6 +33,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -278,6 +282,42 @@ public class UserService {
                 .collect(Collectors.toList());
 
 
+    }
+
+    public Page<BoomarkLikeResponseDto> getBookmarkAndLikes(int page, int size) {
+        String username = getUsernameBySecurityContext();
+        User user = findUserByUserid(username);
+
+        List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
+        List<UserLike> userLikes = userLikeRepository.findByUser(user);
+
+        List<Spot> bookmarkedSpots = new ArrayList<>();
+        List<Spot> likedSpots = new ArrayList<>();
+
+        if (bookmarks != null) {
+            bookmarkedSpots = bookmarks.stream()
+                    .map(Bookmark::getSpot)
+                    .collect(Collectors.toList());
+        }
+
+        if (userLikes != null) {
+            likedSpots = userLikes.stream()
+                    .map(UserLike::getSpot)
+                    .collect(Collectors.toList());
+        }
+
+        List<Spot> distinctSpots = Stream.concat(bookmarkedSpots.stream(), likedSpots.stream())
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<BoomarkLikeResponseDto> spotResponses = distinctSpots.stream()
+                .map(spot -> BoomarkLikeResponseDto.of(spot, bookmarks.contains(spot), userLikes.contains(spot)))
+                .collect(Collectors.toList());
+
+        int start = page * size;
+        int end = Math.min(start + size, spotResponses.size());
+
+        return new PageImpl<>(spotResponses.subList(start, end), PageRequest.of(page, size), spotResponses.size());
     }
 
 

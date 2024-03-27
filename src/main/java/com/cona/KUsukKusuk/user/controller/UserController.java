@@ -28,12 +28,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -131,12 +135,10 @@ public class UserController {
     @GetMapping("/likes-bookmarks")
     @Operation(summary = "사용자 좋아요/북마크 조회", description = "로그인한 사용자의 등록한 좋아요/북마크 조회를 수행합니다.")
 
-    public HttpResponse<List<BoomarkLikeResponseDto>> getUserBookmarksandLikes() {
-
-        List<BoomarkLikeResponseDto> bookmarkandLikes = userService.getBookmarkandLikes();
-
-
-        return HttpResponse.okBuild(bookmarkandLikes);
+    public HttpResponse<Page<BoomarkLikeResponseDto>> getUserBookmarksandLikes(@RequestParam(defaultValue = "5") int page,
+                                                                               @RequestParam(defaultValue = "5") int size) {
+        Page<BoomarkLikeResponseDto> bookmarkAndLikes = userService.getBookmarkAndLikes(page, size);
+        return HttpResponse.okBuild(bookmarkAndLikes);
     }
 
 
