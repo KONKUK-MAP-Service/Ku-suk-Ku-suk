@@ -89,12 +89,31 @@ public class SpotService {
                 .collect(Collectors.toList());
     }
     public SpotDetailResponse getSpotDetails(Long spotId) {
+        String username = SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+
+        Boolean isBookmark=false;
+        Boolean isLike=true;
 
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new SpotNotFoundException());
 
+        if (!username.equals("anonymousUser")) {
+
+            User user = userService.findUserByUserid(username);
+            List<UserLike> userLikes = userLikeRepository.findByUser(user);
+            List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
+
+            isLike = userLikes != null && userLikes.stream().anyMatch(like -> like.getSpot().equals(spot));
+
+            isBookmark = bookmarks != null && bookmarks.stream().anyMatch(bookmark -> bookmark.getSpot().equals(spot));
+
+        }
+
+
+
         boolean isUsersOwnSpot = spot.getUser().getId().equals(false);
-        return SpotDetailResponse.fromSpot(spot);
+        return SpotDetailResponse.fromSpot(spot,isBookmark,isLike);
     }
     public List<SpotGetResponse> getAllPublicSpots() {
 

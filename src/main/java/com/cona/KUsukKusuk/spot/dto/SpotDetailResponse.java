@@ -11,9 +11,13 @@ public record SpotDetailResponse(Long spotId,
                                  List<String> images,
                                  String longitude,
                                  String latitude,
+                                 String author,
+                                 Boolean bookmark,
+                                 Boolean like,
+
                                  String review) {
 
-    public static SpotDetailResponse fromSpot(Spot spot) {
+    public static SpotDetailResponse fromSpot(Spot spot,Boolean isBookmark, Boolean isLike) {
         return SpotDetailResponse.builder()
                 .spotId(spot.getId())
 
@@ -22,6 +26,9 @@ public record SpotDetailResponse(Long spotId,
                 .longitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())
+                .author(spot.getUser().getNickname())
+                .bookmark(isBookmark)
+                .like(isLike)
                 .build();
     }
 
