@@ -132,14 +132,24 @@ public class UserController {
         return HttpResponse.okBuild(userProfile);
     }
 
-    @GetMapping("/likes-bookmarks")
-    @Operation(summary = "사용자 좋아요/북마크 조회", description = "로그인한 사용자의 등록한 좋아요/북마크 조회를 수행합니다.")
 
-    public HttpResponse<Page<BoomarkLikeResponseDto>> getUserBookmarksandLikes(@RequestParam(defaultValue = "5") int page,
-                                                                               @RequestParam(defaultValue = "5") int size) {
-        Page<BoomarkLikeResponseDto> bookmarkAndLikes = userService.getBookmarkAndLikes(page, size);
+
+
+
+    @GetMapping("/likes-bookmarks1")
+    @Operation(summary = "사용자 좋아요/북마크 조회", description = "로그인한 사용자의 등록한 좋아요/북마크 조회를 수행합니다.")
+    public HttpResponse<List<BoomarkLikeResponseDto>> getUserBookmarksandLikes1(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        int adjustedPageNumber = pageNumber - 1;
+
+
+        List<BoomarkLikeResponseDto> bookmarkAndLikes = userService.getBookmarkandLikes(adjustedPageNumber, pageSize);
+
         return HttpResponse.okBuild(bookmarkAndLikes);
     }
+
 
 
 }

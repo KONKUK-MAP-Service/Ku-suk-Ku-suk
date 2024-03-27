@@ -8,14 +8,14 @@ import lombok.Builder;
 
 @Builder
 public record CommentUpdateResponse (
-        Long id, User user, Spot spot, String comment
+        Long commentId, String nickname, Long spotId, String comment
 
 ){
     public static CommentUpdateResponse of(Comment comment){
         return CommentUpdateResponse.builder()
-                .id(comment.getId())
-                .user(comment.getUser())
-                .spot(comment.getSpot())
+                .commentId(comment.getId())
+                .nickname(comment.getUser().getNickname())
+                .spotId(comment.getSpot().getId())
                 .comment(comment.getComment())
                 .build();
     }

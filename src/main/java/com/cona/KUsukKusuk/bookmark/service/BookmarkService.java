@@ -12,6 +12,7 @@ import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.service.UserService;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,11 @@ public class BookmarkService {
 
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new SpotNotFoundException(HttpExceptionCode.SPOT_NOT_FOUND));
+        Optional<Bookmark> existbookmark = bookmarkRepository.findByUserAndSpot(user, spot);
+
+        if (existbookmark.isPresent()) {
+            return;
+        }
 
         Bookmark bookmark = new Bookmark();
         bookmark.setUser(user);

@@ -16,6 +16,7 @@ import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.BoomarkLikeResponseDto;
+import com.cona.KUsukKusuk.user.dto.PageInfo;
 import com.cona.KUsukKusuk.user.dto.UpdateUserProfileRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserProfileResponse;
@@ -250,21 +251,22 @@ public class UserService {
         return UserProfileResponse.of(user);
     }
 
-    public List<BoomarkLikeResponseDto> getBookmarkandLikes() {
+    public List<BoomarkLikeResponseDto> getBookmarkandLikes(int pageNumber, int pageSize) {
         String username = getUsernameBySecurityContext();
         User user = findUserByUserid(username);
 
         List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
-
         List<UserLike> userLikes = userLikeRepository.findByUser(user);
 
-        List<Spot> bookmarkedSpots = new ArrayList<>();
+        List<Spot> bookmarkedSpots;
         List<Spot> likedSpots = new ArrayList<>();
 
         if (bookmarks != null) {
             bookmarkedSpots = bookmarks.stream()
                     .map(Bookmark::getSpot)
                     .collect(Collectors.toList());
+        } else {
+            bookmarkedSpots = new ArrayList<>();
         }
 
         if (userLikes != null) {
@@ -277,48 +279,27 @@ public class UserService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        return distinctSpots.stream()
-                .map(spot -> BoomarkLikeResponseDto.of(spot, bookmarks.contains(spot), userLikes.contains(spot)))
+        int start = Math.min(pageNumber * pageSize, distinctSpots.size());
+        int end = Math.min((pageNumber + 1) * pageSize, distinctSpots.size());
+
+        if (start > end) {
+            start = end;
+        }
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.setTotalElements(distinctSpots.size());
+        pageInfo.setPage(pageNumber+1);
+        pageInfo.setSize(pageSize);
+        pageInfo.setTotalPages((int) Math.ceil((double) distinctSpots.size() / pageSize));
+
+        List<Spot> pagedDistinctSpots = distinctSpots.subList(start, end);
+
+        List<Spot> finalLikedSpots = likedSpots;
+
+        return pagedDistinctSpots.stream()
+                .map(spot -> BoomarkLikeResponseDto.of(spot, bookmarkedSpots.contains(spot), finalLikedSpots.contains(spot), pageInfo))
                 .collect(Collectors.toList());
-
-
     }
 
-    public Page<BoomarkLikeResponseDto> getBookmarkAndLikes(int page, int size) {
-        String username = getUsernameBySecurityContext();
-        User user = findUserByUserid(username);
-
-        List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
-        List<UserLike> userLikes = userLikeRepository.findByUser(user);
-
-        List<Spot> bookmarkedSpots = new ArrayList<>();
-        List<Spot> likedSpots = new ArrayList<>();
-
-        if (bookmarks != null) {
-            bookmarkedSpots = bookmarks.stream()
-                    .map(Bookmark::getSpot)
-                    .collect(Collectors.toList());
-        }
-
-        if (userLikes != null) {
-            likedSpots = userLikes.stream()
-                    .map(UserLike::getSpot)
-                    .collect(Collectors.toList());
-        }
-
-        List<Spot> distinctSpots = Stream.concat(bookmarkedSpots.stream(), likedSpots.stream())
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<BoomarkLikeResponseDto> spotResponses = distinctSpots.stream()
-                .map(spot -> BoomarkLikeResponseDto.of(spot, bookmarks.contains(spot), userLikes.contains(spot)))
-                .collect(Collectors.toList());
-
-        int start = page * size;
-        int end = Math.min(start + size, spotResponses.size());
-
-        return new PageImpl<>(spotResponses.subList(start, end), PageRequest.of(page, size), spotResponses.size());
-    }
 
 
 }
