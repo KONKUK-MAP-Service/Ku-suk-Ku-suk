@@ -2,12 +2,14 @@ package com.cona.KUsukKusuk.spot.service;
 
 import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
 import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
+import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.s3.S3Service;
 import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.CommentResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotJoinResponse;
@@ -164,6 +166,31 @@ public class SpotService {
         s3Service.deleteSpotImages(spot,user);
 
         spotRepository.delete(spot);
+    }
+    public List<CommentResponse> getSpotComments(Long spotId) {
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new SpotNotFoundException());
+
+        String username = userService.getUsernameBySecurityContext();
+        boolean currentUserLoggedIn = !username.equals("anonymousUser");
+
+
+        List<Comment> comments = spot.getComments();
+        return comments.stream()
+                .map(comment -> mapToCommentResponse(comment, currentUserLoggedIn, username))
+                .collect(Collectors.toList());
+    }
+
+    private CommentResponse mapToCommentResponse(Comment comment, boolean currentUserLoggedIn, String username) {
+        boolean deletable = currentUserLoggedIn && comment.getUser().getUserId().equals(username);
+
+        return new CommentResponse(
+                comment.getId(),
+                comment.getComment(),
+                comment.getUser().getNickname(),
+                deletable,
+                comment.getCreatedDate()
+        );
     }
 
 

@@ -15,6 +15,7 @@ public record SpotDetailResponse(Long spotId,
                                  Boolean bookmark,
                                  Boolean like,
 
+
                                  String review) {
 
     public static SpotDetailResponse fromSpot(Spot spot,Boolean isBookmark, Boolean isLike) {
