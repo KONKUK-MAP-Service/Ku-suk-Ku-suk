@@ -16,9 +16,13 @@ public record BoomarkLikeResponseDto(
 
         Boolean bookmark,
         Boolean like,
-        String spotImageurl
+        String spotImageurl,
+        long totalElements,
+        int page,
+        int size,
+        int totalPages
 ) {
-    public static BoomarkLikeResponseDto of(Spot spot, Boolean isBookmark, Boolean isLike) {
+    public static BoomarkLikeResponseDto of(Spot spot, Boolean isBookmark, Boolean isLike, PageInfo pageInfo) {
         return BoomarkLikeResponseDto.builder()
                 .spotName(spot.getSpotName())
                 .spotImageurl(spot.getImageUrls().get(0))
@@ -26,6 +30,10 @@ public record BoomarkLikeResponseDto(
                 .author(spot.getUser().getNickname())
                 .bookmark(isBookmark)
                 .like(isLike)
+                .totalElements(pageInfo.getTotalElements())
+                .page(pageInfo.getPage())
+                .size(pageInfo.getSize())
+                .totalPages(pageInfo.getTotalPages())
                 .build();
     }
 }

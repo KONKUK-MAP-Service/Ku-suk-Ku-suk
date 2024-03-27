@@ -15,6 +15,7 @@ import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import com.cona.KUsukKusuk.user.service.UserService;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,11 @@ public class LikeService {
 
         Spot spot = spotRepository.findById(likeDto.spotId())
                 .orElseThrow(() -> new SpotNotFoundException(HttpExceptionCode.SPOT_NOT_FOUND));
+
+        Optional<UserLike> existlike = userLikeRepository.findByUserAndSpot(user, spot);
+        if (existlike.isPresent()) {
+            return;
+        }
 
         UserLike userLike = new UserLike();
         userLike.setUser(user);

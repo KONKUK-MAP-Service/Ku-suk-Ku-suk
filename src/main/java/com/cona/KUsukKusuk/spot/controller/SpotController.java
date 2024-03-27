@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.spot.controller;
 
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.CommentResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDeleteResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
@@ -84,6 +85,18 @@ public class SpotController {
                 SpotDeleteResponse.of("장소삭제가 성공적으로 이루어졌습니다.")
         );
     }
+    @GetMapping("/{spotId}/comments")
+    @Operation(summary = "장소 댓글 조회", description = "특정 장소에 등록된 댓글을 조회합니다.")
+    public HttpResponse<List<CommentResponse>> getSpotComments(@PathVariable Long spotId) {
+        List<CommentResponse> comments = spotService.getSpotComments(spotId);
+        return HttpResponse.okBuild(comments);
+    }
+
+
+
+
+
+
 
 }
 
