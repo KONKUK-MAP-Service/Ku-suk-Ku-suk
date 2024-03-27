@@ -40,8 +40,19 @@ public class LikeService {
         userLikeRepository.save(userLike);
     }
     public void removeLike(UnlikeRequest unlikeDto) {
+        Long spotId = unlikeDto.spotId();
 
-        userLikeRepository.deleteById(unlikeDto.likeId());
+        String username = userService.getUsernameBySecurityContext();
+        User user = userService.findUserByUserid(username);
+
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new SpotNotFoundException(HttpExceptionCode.SPOT_NOT_FOUND));
+
+        UserLike userLike = userLikeRepository.findByUserAndSpot(user, spot)
+                .orElseThrow(() -> new LikeException(HttpExceptionCode.LIKE_NOT_EXIST));
+
+
+        userLikeRepository.delete(userLike);
 
     }
     public List<LikeResponseDto> getUserLikes() {
