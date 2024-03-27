@@ -9,6 +9,7 @@ import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.like.dto.LikeResponseDto;
 import com.cona.KUsukKusuk.like.service.LikeService;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.BoomarkLikeResponseDto;
 import com.cona.KUsukKusuk.user.dto.CheckPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordRequest;
 import com.cona.KUsukKusuk.user.dto.FindPasswordResponse;
@@ -126,19 +127,16 @@ public class UserController {
         UserProfileResponse userProfile = userService.getCurrentUserProfile();
         return HttpResponse.okBuild(userProfile);
     }
-    @GetMapping("/bookmarks")
-    @Operation(summary = "사용자 북마크 조회", description = "로그인한 사용자의 등록한 북마크 조회를 수행합니다.")
 
-    public HttpResponse<List<BookmarkResponseDto>> getUserBookmarks() {
-        List<BookmarkResponseDto> bookmarks = bookmarkService.getUserBookmarks();
-        return HttpResponse.okBuild(bookmarks);
-    }
-    @GetMapping("/likes")
-    @Operation(summary = "사용자 좋아요 조회", description = "로그인한 사용자의 등록한 좋아요 조회를 수행합니다.")
+    @GetMapping("/likes-bookmarks")
+    @Operation(summary = "사용자 좋아요/북마크 조회", description = "로그인한 사용자의 등록한 좋아요/북마크 조회를 수행합니다.")
 
-    public HttpResponse<List<LikeResponseDto>> getUserLikes() {
-        List<LikeResponseDto> userLikes = likeService.getUserLikes();
-        return HttpResponse.okBuild(userLikes);
+    public HttpResponse<List<BoomarkLikeResponseDto>> getUserBookmarksandLikes() {
+
+        List<BoomarkLikeResponseDto> bookmarkandLikes = userService.getBookmarkandLikes();
+
+
+        return HttpResponse.okBuild(bookmarkandLikes);
     }
 
 

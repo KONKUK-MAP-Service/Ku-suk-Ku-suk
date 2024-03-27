@@ -15,6 +15,7 @@ import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.BoomarkLikeResponseDto;
 import com.cona.KUsukKusuk.user.dto.UpdateUserProfileRequest;
 import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.dto.UserProfileResponse;
@@ -26,7 +27,10 @@ import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -240,6 +244,40 @@ public class UserService {
         String userId = getUsernameBySecurityContext();
         User user = findUserByUserid(userId);
         return UserProfileResponse.of(user);
+    }
+
+    public List<BoomarkLikeResponseDto> getBookmarkandLikes() {
+        String username = getUsernameBySecurityContext();
+        User user = findUserByUserid(username);
+
+        List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
+
+        List<UserLike> userLikes = userLikeRepository.findByUser(user);
+
+        List<Spot> bookmarkedSpots = new ArrayList<>();
+        List<Spot> likedSpots = new ArrayList<>();
+
+        if (bookmarks != null) {
+            bookmarkedSpots = bookmarks.stream()
+                    .map(Bookmark::getSpot)
+                    .collect(Collectors.toList());
+        }
+
+        if (userLikes != null) {
+            likedSpots = userLikes.stream()
+                    .map(UserLike::getSpot)
+                    .collect(Collectors.toList());
+        }
+
+        List<Spot> distinctSpots = Stream.concat(bookmarkedSpots.stream(), likedSpots.stream())
+                .distinct()
+                .collect(Collectors.toList());
+
+        return distinctSpots.stream()
+                .map(spot -> BoomarkLikeResponseDto.of(spot, bookmarks.contains(spot), userLikes.contains(spot)))
+                .collect(Collectors.toList());
+
+
     }
 
 
