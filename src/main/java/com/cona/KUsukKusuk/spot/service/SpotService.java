@@ -93,7 +93,7 @@ public class SpotService {
                 .getName();
 
         Boolean isBookmark=false;
-        Boolean isLike=true;
+        Boolean isLike=false;
 
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new SpotNotFoundException());

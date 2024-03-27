@@ -37,8 +37,17 @@ public class BookmarkService {
         bookmarkRepository.save(bookmark);
     }
 
-    public void deleteBookmark(Long bookmarkId) {
-        bookmarkRepository.deleteById(bookmarkId);
+    public void deleteBookmark(Long spotId) {
+        String username = userService.getUsernameBySecurityContext();
+        User user = userService.findUserByUserid(username);
+
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new SpotNotFoundException(HttpExceptionCode.SPOT_NOT_FOUND));
+
+        Bookmark bookmark = bookmarkRepository.findByUserAndSpot(user, spot)
+                .orElseThrow(()->new BookmarkException(HttpExceptionCode.BOOK_MARK_NOT_EXIST));
+
+        bookmarkRepository.delete(bookmark);
     }
 
 

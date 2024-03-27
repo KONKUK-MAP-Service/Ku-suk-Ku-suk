@@ -33,7 +33,7 @@ public class BookmarkController {
     @Operation(summary = "북마트 삭제", description = "북마크 삭제를 수행합니다.")
 
     public HttpResponse<String> deleteBookmark(@RequestBody BookmarkDeleteRequest request) {
-        bookmarkService.deleteBookmark(request.bookmarkId());
+        bookmarkService.deleteBookmark(request.spotId());
         return HttpResponse.okBuild("장소 북마크를 삭제했습니다.");
     }
 }
