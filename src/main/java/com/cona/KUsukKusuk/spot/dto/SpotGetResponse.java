@@ -17,17 +17,24 @@ public record SpotGetResponse(
        String longtitude,
         String latitude,
          String review,
+        String author,
+        Boolean bookmark,
+        Boolean like,
+
         LocalDateTime createDate
 ) {
-    public static SpotGetResponse of(Spot spot,Boolean bool) {
+    public static SpotGetResponse of(Spot spot,Boolean isUsersOwnSpot,Boolean isBookmark,Boolean isLike) {
         return SpotGetResponse.builder()
                 .spotId(spot.getId())
-                .isUsersOwnSpot(bool)
+                .isUsersOwnSpot(isUsersOwnSpot)
                 .spotName(spot.getSpotName())
                 .images(spot.getImageUrls())
                 .longtitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())
+                .author(spot.getUser().getNickname())
+                .bookmark(isBookmark)
+                .like(isLike)
                 .createDate(spot.getCreatedDate())
                 .build();
     }
