@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.comment.service;
 
 import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.comment.dto.CommentGetResponse;
+import com.cona.KUsukKusuk.comment.dto.CommentPaginationResponse;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
 import com.cona.KUsukKusuk.comment.repository.CommentRepository;
@@ -87,5 +88,28 @@ public class CommentService {
 
         return commentsByuser;
 
+    }
+
+    public List<CommentPaginationResponse> getPagedComments(List<CommentGetResponse> commentsByUser) {
+        //commentsByuser 한 객체마다 pagination 해줘서 pagedComments 에 넣어주기
+        List<CommentPaginationResponse> pagedComments = new ArrayList<>();
+
+        Long totalComments = (long) commentsByUser.size();
+        Long amountInBlock = 10L;
+        Long lastPage = totalComments / amountInBlock; // 전체 페이지 수
+        // 나머지가 0보다 큰 경우에는 몫에 1을 더해주기
+        if (totalComments % amountInBlock > 0) {
+            lastPage++;
+        }
+
+        Long curPageNum = 1L;
+
+        for (int i = 0; i < totalComments; i += amountInBlock) {
+            int endIndex = (int) Math.min(i + amountInBlock, commentsByUser.size());
+            List<CommentGetResponse> currentPageComments = commentsByUser.subList(i, endIndex);
+            pagedComments.add(CommentPaginationResponse.of(currentPageComments, totalComments, curPageNum, lastPage, (long) (endIndex-i)));
+            curPageNum++;
+        }
+        return pagedComments;
     }
 }

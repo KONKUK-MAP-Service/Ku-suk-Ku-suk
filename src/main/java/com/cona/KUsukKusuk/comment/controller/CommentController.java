@@ -79,15 +79,15 @@ public class CommentController {
 
     @GetMapping("/myAllComments")
     @Operation(summary = "자신의 댓글 전체 조회", description = "로그인한 사용자의 댓글을 전체 조회합니다.")
-    public HttpResponse<List<CommentGetResponse>> allComments(){
+    public HttpResponse<List<CommentPaginationResponse>> allComments(){
         User user = commentService.getCurrentUser();
         Long userId = user.getId(); //userId 정보
         //List<SpotGetResponse> allSpots = spotService.getAllSpots(); //모든 spot 정보
         List<CommentGetResponse> commentsByUser = commentService.getUserCommentsOfAllSpots(userId); //사용자가 쓴 comment만
         //페이지 네이션 적용
-
+        List<CommentPaginationResponse> commentPaginationResponses = commentService.getPagedComments(commentsByUser);
         return  HttpResponse.okBuild(
-                commentsByUser);
+                commentPaginationResponses);
     }
 
 
