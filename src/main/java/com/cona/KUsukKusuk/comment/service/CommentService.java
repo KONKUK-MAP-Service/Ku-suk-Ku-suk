@@ -1,10 +1,12 @@
 package com.cona.KUsukKusuk.comment.service;
 
 import com.cona.KUsukKusuk.comment.domain.Comment;
+import com.cona.KUsukKusuk.comment.dto.CommentGetResponse;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
 import com.cona.KUsukKusuk.comment.repository.CommentRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
@@ -13,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,5 +71,21 @@ public class CommentService {
 
     public void delete(Comment comment) {
         commentRepository.delete(comment);
+    }
+
+
+    public List<CommentGetResponse> getUserCommentsOfAllSpots(Long userId) {
+        //목표 : 사용자가 쓴 comment만 list<CommentGetResponse> 형태로 반환
+        List<Comment> comments = commentRepository.findAll();
+        List<CommentGetResponse> commentsByuser = new ArrayList<>();
+        Long cNum = 0L;
+        for (Comment c : comments)
+        {
+            if (c.getUser().getId().equals(userId))
+                commentsByuser.add(CommentGetResponse.of(++cNum,c,c.getCreatedDate()));
+        }
+
+        return commentsByuser;
+
     }
 }
