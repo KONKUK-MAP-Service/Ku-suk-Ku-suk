@@ -83,7 +83,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String password = customUserDetails.getPassword();
         //AT : 6분
-        String accessToken = jwtUtil.createJwt(username, password, 60*60*1000L);
+        String accessToken = jwtUtil.createJwt(username, password, 60*60*100L);
         //RT : 7일
         String refreshToken = jwtUtil.createRefreshToken(username, password, 86400000*7L);
 
