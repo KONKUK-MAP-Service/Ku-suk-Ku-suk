@@ -6,6 +6,7 @@ import com.cona.KUsukKusuk.global.domain.BaseEntity;
 import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.picture.Picture;
 import com.cona.KUsukKusuk.user.domain.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -36,16 +37,16 @@ public class Spot extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "spot")
+    @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
     private List<UserLike> userLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "spot")
     private List<Picture> pictures = new ArrayList<>();
 
-    @OneToMany(mappedBy = "spot")
+    @OneToMany(mappedBy = "spot",cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "spot")
+    @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
     private List<Bookmark> bookmarks = new ArrayList<>();
     @Column(nullable = false)
     private String spotName;

@@ -9,6 +9,7 @@ import lombok.Builder;
 public record BoomarkLikeResponseDto(
 
         String spotName,
+        Long spotId,
         String review,
         LocalDateTime createDate,
 
@@ -26,6 +27,8 @@ public record BoomarkLikeResponseDto(
         return BoomarkLikeResponseDto.builder()
                 .spotName(spot.getSpotName())
                 .spotImageurl(spot.getImageUrls().get(0))
+                .createDate(spot.getCreatedDate())
+                .spotId(spot.getId())
                 .review(spot.getReview())
                 .author(spot.getUser().getNickname())
                 .bookmark(isBookmark)

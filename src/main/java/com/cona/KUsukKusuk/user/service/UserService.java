@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -44,6 +45,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -136,12 +138,13 @@ public class UserService {
         User member=userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USERID_NOT_FOUND));
 
-        if (member.getEmail() != email) {
+        if (!member.getEmail().equals(email)) {
             throw new UserNotFoundException(HttpExceptionCode.EMAIL_USER_NOT_EQUAL);
         }
 
         String newPassword = generateNewPassword();
         member.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        member.setNoCryptpassword(newPassword);
         userRepository.save(member);
 
         String title = "쿠석쿠석 임시 비밀번호 발급";
