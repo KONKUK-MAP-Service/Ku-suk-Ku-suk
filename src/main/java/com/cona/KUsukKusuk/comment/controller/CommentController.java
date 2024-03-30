@@ -7,10 +7,14 @@ import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
 import com.cona.KUsukKusuk.comment.service.CommentService;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
+import com.cona.KUsukKusuk.spot.service.SpotService;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -18,11 +22,13 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     final private CommentService commentService;
     final private UserService userService;
+    final private SpotService spotService;
     private CommentJoinRequest CommentJoinRequest;
 
-    public CommentController(CommentService commentService, UserService userService) {
+    public CommentController(CommentService commentService, UserService userService, SpotService spotService) {
         this.commentService = commentService;
         this.userService = userService;
+        this.spotService = spotService;
     }
 
     @PostMapping("/{spotId}/register")
@@ -32,9 +38,9 @@ public class CommentController {
         User user = commentService.getCurrentUser();
         Spot spot = commentService.getCurrentSpot(spotId);
         //위 user, spot 사용해서 comment 객체 만들기
-        System.out.println("user, spot 까지 담기 완료");
+        //System.out.println("user, spot 까지 담기 완료");
         Comment comment = commentJoinRequest.toEntity(user, spot);
-        System.out.println("comment 객체 생성 완료");
+        //System.out.println("comment 객체 생성 완료");
         Comment savedComment = commentService.save(comment);
         return  HttpResponse.okBuild(
                 CommentJoinResponse.of(savedComment));
@@ -69,6 +75,19 @@ public class CommentController {
         return HttpResponse.okBuild(
                 CommentDeleteResponse.of("댓글이 삭제 되었습니다.")
         );
+    }
+
+    @GetMapping("/myAllComments")
+    @Operation(summary = "자신의 댓글 전체 조회", description = "로그인한 사용자의 댓글을 전체 조회합니다.")
+    public HttpResponse<List<CommentPaginationResponse>> allComments(){
+        User user = commentService.getCurrentUser();
+        Long userId = user.getId(); //userId 정보
+        //List<SpotGetResponse> allSpots = spotService.getAllSpots(); //모든 spot 정보
+        List<CommentGetResponse> commentsByUser = commentService.getUserCommentsOfAllSpots(userId); //사용자가 쓴 comment만
+        //페이지 네이션 적용
+        List<CommentPaginationResponse> commentPaginationResponses = commentService.getPagedComments(commentsByUser);
+        return  HttpResponse.okBuild(
+                commentPaginationResponses);
     }
 
 

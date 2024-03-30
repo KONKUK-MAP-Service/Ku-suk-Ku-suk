@@ -4,7 +4,6 @@ import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
 import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
 import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
-import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.global.s3.S3Service;
 import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
@@ -12,28 +11,22 @@ import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.dto.CommentResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
-import com.cona.KUsukKusuk.spot.dto.SpotJoinResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotUpdateRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
-import com.cona.KUsukKusuk.user.dto.UserJoinRequest;
 import com.cona.KUsukKusuk.user.exception.UserNotFoundException;
 import com.cona.KUsukKusuk.user.repository.UserRepository;
 import com.cona.KUsukKusuk.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service

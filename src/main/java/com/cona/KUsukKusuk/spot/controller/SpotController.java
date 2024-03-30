@@ -11,11 +11,10 @@ import com.cona.KUsukKusuk.spot.dto.SpotUpdateRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotJoinResponse;
 import com.cona.KUsukKusuk.spot.service.SpotService;
-import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
