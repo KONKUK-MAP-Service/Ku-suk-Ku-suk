@@ -4,6 +4,7 @@ import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.comment.dto.*;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
+import com.cona.KUsukKusuk.comment.exception.PageNotFoundException;
 import com.cona.KUsukKusuk.comment.service.CommentService;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.spot.domain.Spot;
@@ -77,15 +78,15 @@ public class CommentController {
         );
     }
 
-    @GetMapping("/myAllComments")
-    @Operation(summary = "자신의 댓글 전체 조회", description = "로그인한 사용자의 댓글을 전체 조회합니다.")
-    public HttpResponse<List<CommentPaginationResponse>> allComments(){
+    @GetMapping("/myAllComments/{pageNum}/{commentsInPage}")
+    @Operation(summary = "자신의 댓글 전체 조회", description = "로그인한 사용자의 댓글을 전체 조회합니다.('페이지 위치:보여지는 댓글 수'형식으로 입력받습니다.)")
+    public HttpResponse<CommentPaginationResponse> allComments(@PathVariable("pageNum")Long pageNum, @PathVariable("commentsInPage")Long commentsInPage) throws PageNotFoundException {
         User user = commentService.getCurrentUser();
         Long userId = user.getId(); //userId 정보
         //List<SpotGetResponse> allSpots = spotService.getAllSpots(); //모든 spot 정보
         List<CommentGetResponse> commentsByUser = commentService.getUserCommentsOfAllSpots(userId); //사용자가 쓴 comment만
         //페이지 네이션 적용
-        List<CommentPaginationResponse> commentPaginationResponses = commentService.getPagedComments(commentsByUser);
+        CommentPaginationResponse commentPaginationResponses = commentService.getPagedComments(commentsByUser,pageNum, commentsInPage);
         return  HttpResponse.okBuild(
                 commentPaginationResponses);
     }

@@ -5,20 +5,17 @@ import com.cona.KUsukKusuk.comment.dto.CommentGetResponse;
 import com.cona.KUsukKusuk.comment.dto.CommentPaginationResponse;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
+import com.cona.KUsukKusuk.comment.exception.PageNotFoundException;
 import com.cona.KUsukKusuk.comment.repository.CommentRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
-import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.service.UserService;
-import jakarta.validation.constraints.NotNull;
-import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -90,16 +87,19 @@ public class CommentService {
 
     }
 
-    public List<CommentPaginationResponse> getPagedComments(List<CommentGetResponse> commentsByUser) {
+    public CommentPaginationResponse getPagedComments(List<CommentGetResponse> commentsByUser, Long pageNum, Long commentsInPage) throws PageNotFoundException {
         //commentsByuser 한 객체마다 pagination 해줘서 pagedComments 에 넣어주기
         List<CommentPaginationResponse> pagedComments = new ArrayList<>();
 
         Long totalComments = (long) commentsByUser.size();
-        Long amountInBlock = 10L;
+        Long amountInBlock = commentsInPage;
         Long lastPage = totalComments / amountInBlock; // 전체 페이지 수
         // 나머지가 0보다 큰 경우에는 몫에 1을 더해주기
         if (totalComments % amountInBlock > 0) {
             lastPage++;
+        }
+        if (pageNum > lastPage || pageNum <= 0) {//요청하는 페이지가 존재하지 않는 경우
+            throw new PageNotFoundException("요청하는 페이지가 존재하지 않습니다.");
         }
 
         Long curPageNum = 1L;
@@ -110,6 +110,8 @@ public class CommentService {
             pagedComments.add(CommentPaginationResponse.of(currentPageComments, totalComments, curPageNum, lastPage, (long) (endIndex-i)));
             curPageNum++;
         }
-        return pagedComments;
+
+
+        return pagedComments.get((int) (pageNum - 1));
     }
 }
