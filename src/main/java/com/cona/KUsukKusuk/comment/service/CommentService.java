@@ -5,7 +5,6 @@ import com.cona.KUsukKusuk.comment.dto.CommentGetResponse;
 import com.cona.KUsukKusuk.comment.dto.CommentPaginationResponse;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
-import com.cona.KUsukKusuk.comment.exception.PageNotFoundException;
 import com.cona.KUsukKusuk.comment.repository.CommentRepository;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
@@ -87,7 +86,7 @@ public class CommentService {
 
     }
 
-    public CommentPaginationResponse getPagedComments(List<CommentGetResponse> commentsByUser, Long pageNum, Long commentsInPage) throws PageNotFoundException {
+    public CommentPaginationResponse getPagedComments(List<CommentGetResponse> commentsByUser, Long pageNum, Long commentsInPage){
         //commentsByuser 한 객체마다 pagination 해줘서 pagedComments 에 넣어주기
         List<CommentPaginationResponse> pagedComments = new ArrayList<>();
 
@@ -99,7 +98,7 @@ public class CommentService {
             lastPage++;
         }
         if (pageNum > lastPage || pageNum <= 0) {//요청하는 페이지가 존재하지 않는 경우
-            throw new PageNotFoundException("요청하는 페이지가 존재하지 않습니다.");
+            return null;
         }
 
         Long curPageNum = 1L;

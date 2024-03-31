@@ -4,11 +4,9 @@ import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.comment.dto.*;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
-import com.cona.KUsukKusuk.comment.exception.PageNotFoundException;
 import com.cona.KUsukKusuk.comment.service.CommentService;
 import com.cona.KUsukKusuk.global.response.HttpResponse;
 import com.cona.KUsukKusuk.spot.domain.Spot;
-import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
 import com.cona.KUsukKusuk.spot.service.SpotService;
 import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.service.UserService;
@@ -80,7 +78,7 @@ public class CommentController {
 
     @GetMapping("/myAllComments/{pageNum}/{commentsInPage}")
     @Operation(summary = "자신의 댓글 전체 조회", description = "로그인한 사용자의 댓글을 전체 조회합니다.('페이지 위치:보여지는 댓글 수'형식으로 입력받습니다.)")
-    public HttpResponse<CommentPaginationResponse> allComments(@PathVariable("pageNum")Long pageNum, @PathVariable("commentsInPage")Long commentsInPage) throws PageNotFoundException {
+    public HttpResponse<CommentPaginationResponse> allComments(@PathVariable("pageNum")Long pageNum, @PathVariable("commentsInPage")Long commentsInPage){
         User user = commentService.getCurrentUser();
         Long userId = user.getId(); //userId 정보
         //List<SpotGetResponse> allSpots = spotService.getAllSpots(); //모든 spot 정보
