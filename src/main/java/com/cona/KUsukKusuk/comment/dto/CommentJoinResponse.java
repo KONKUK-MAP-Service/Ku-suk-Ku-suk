@@ -8,13 +8,14 @@ import lombok.Builder;
 
 @Builder
 public record CommentJoinResponse (
-        Long commentId, String nickname, Long spotId, String comment
+        Long commentId, String nickname, Long spotId, String comment,String profileImage
 )
 {
     public static CommentJoinResponse of(Comment comment){
         return CommentJoinResponse.builder()
                 .commentId(comment.getId())
                 .nickname(comment.getUser().getNickname())
+                .profileImage(comment.getUser().getProfileimage())
                 .spotId(comment.getSpot().getId())
                 .comment(comment.getComment())
                 .build();
