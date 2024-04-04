@@ -18,6 +18,7 @@ public record CommentGetResponse (
                 .commentId(comment.getId())
                 .comment(comment.getComment())
                 .userId(comment.getUser().getId())
+
                 .createDate(createDate)
                 .build();
     }

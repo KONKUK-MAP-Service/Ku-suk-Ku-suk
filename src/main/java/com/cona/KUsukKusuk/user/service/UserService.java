@@ -111,6 +111,9 @@ public class UserService {
         //redis에서 해당 키 검색해서 해당 토큰에 대응하는 key 추출
         String userId = redisService.getValues(pureRefreshToken);
 
+        if (!redisService.checkExistsValue(userId)) {
+            throw new IncorrectRefreshTokenException();
+        }
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(UserNotFoundException::new);
 

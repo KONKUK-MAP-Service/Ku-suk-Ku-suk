@@ -14,5 +14,6 @@ public class CommentResponse {
     private String author;
     boolean deletable;
     private LocalDateTime createdDate;
+    private String profileImage;
 
 }

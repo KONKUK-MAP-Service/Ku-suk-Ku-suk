@@ -129,7 +129,7 @@ public class S3Service {
 
 
     public void deleteSpotImages(Spot spot,User user) {
-        //현재 url에서 키 값을 추출해서 그대로 해당 키의 버킷 객체를
+        //현재 url에서 키 값을 추출해서 그대로 해당 키의 버킷 객체를 삭제(전부삭제)
 
         List<String> imageUrls = spot.getImageUrls();
         if(!imageUrls.isEmpty()){
@@ -139,6 +139,15 @@ public class S3Service {
                 amazonS3.deleteObject(bucket,key);
             }
 
+        }
+    }
+    public void deleteImagebyUrl(User member,String url) {
+
+
+
+        if (url != null) {
+            String key = extractString(url, member.getUserId());
+            amazonS3.deleteObject(bucket, key);
         }
     }
 

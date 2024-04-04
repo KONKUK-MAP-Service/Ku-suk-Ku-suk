@@ -1,6 +1,7 @@
 package com.cona.KUsukKusuk.spot.dto;
 
 import com.cona.KUsukKusuk.spot.domain.Spot;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 
@@ -14,6 +15,7 @@ public record SpotDetailResponse(Long spotId,
                                  String author,
                                  Boolean bookmark,
                                  Boolean like,
+                                 LocalDateTime createDate,
 
 
                                  String review) {
@@ -29,6 +31,7 @@ public record SpotDetailResponse(Long spotId,
                 .review(spot.getReview())
                 .author(spot.getUser().getNickname())
                 .bookmark(isBookmark)
+                .createDate(spot.getCreatedDate())
                 .like(isLike)
                 .build();
     }

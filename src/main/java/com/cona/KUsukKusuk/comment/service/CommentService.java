@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.comment.service;
 
 import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.comment.dto.CommentGetResponse;
+import com.cona.KUsukKusuk.comment.dto.CommentListResponseDto;
 import com.cona.KUsukKusuk.comment.dto.CommentPaginationResponse;
 import com.cona.KUsukKusuk.comment.exception.CommentNotFoundException;
 import com.cona.KUsukKusuk.comment.exception.CommentUserNotMatchedException;
@@ -10,22 +11,29 @@ import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
 import com.cona.KUsukKusuk.spot.repository.SpotRepository;
 import com.cona.KUsukKusuk.user.domain.User;
+import com.cona.KUsukKusuk.user.dto.BoomarkLikeResponseDto;
+import com.cona.KUsukKusuk.user.dto.PageInfo;
 import com.cona.KUsukKusuk.user.service.UserService;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CommentService {
     private final CommentRepository commentRepository;
     private final SpotRepository spotRepository;
     private final UserService userService;
+
     public CommentService(CommentRepository commentRepository, SpotRepository spotRepository, UserService userService) {
         this.commentRepository = commentRepository;
         this.spotRepository = spotRepository;
         this.userService = userService;
     }
+
     public Comment save(Comment comment) {
         Comment savedComment = commentRepository.save(comment);
         return savedComment;
@@ -37,13 +45,14 @@ public class CommentService {
         return user;
     }
 
-    public  Spot getCurrentSpot(Long spotId) {
+    public Spot getCurrentSpot(Long spotId) {
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new SpotNotFoundException());
         return spot;
     }
 
-    public Comment getCurrentComment(String commentUserName , Spot spot, Long commentId) throws CommentNotFoundException, CommentUserNotMatchedException {
+    public Comment getCurrentComment(String commentUserName, Spot spot, Long commentId)
+            throws CommentNotFoundException, CommentUserNotMatchedException {
         List<Comment> commentList = spot.getComments();
         Comment wantToUpdate = null; // 초기화를 null로 설정
         for (Comment comment : commentList) {
@@ -59,10 +68,11 @@ public class CommentService {
         }
 
         //commentUserName과 comment의 작성자 일치 확인
-        if (wantToUpdate.getUser().getUserId().equals(commentUserName))
+        if (wantToUpdate.getUser().getUserId().equals(commentUserName)) {
             return wantToUpdate;
-        else
+        } else {
             throw new CommentUserNotMatchedException("Don't have authority to update the comment.");
+        }
 
     }
 
@@ -71,46 +81,54 @@ public class CommentService {
     }
 
 
-    public List<CommentGetResponse> getUserCommentsOfAllSpots(Long userId) {
-        //목표 : 사용자가 쓴 comment만 list<CommentGetResponse> 형태로 반환
-        List<Comment> comments = commentRepository.findAll();
-        List<CommentGetResponse> commentsByuser = new ArrayList<>();
-        Long cNum = 0L;
-        for (Comment c : comments)
-        {
-            if (c.getUser().getId().equals(userId))
-                commentsByuser.add(CommentGetResponse.of(++cNum,c,c.getCreatedDate()));
+    public List<CommentListResponseDto> getUserCommentsOfAllSpots(Long userId) {
+        // 사용자가 쓴 comment만 가져오기
+        User user = getCurrentUser();
+        List<Comment> comments = commentRepository.findByUser(user);
+        List<CommentListResponseDto> commentsByUser = new ArrayList<>();
+
+        // 가져온 comment를 CommentListResponseDto로 변환하여 리스트에 추가
+        for (Comment comment : comments) {
+            CommentListResponseDto commentDto = CommentListResponseDto.builder()
+                    .spotName(comment.getSpot().getSpotName())
+                    .spotId(comment.getSpot().getId())
+                    .review(comment.getSpot().getReview())
+                    .CommentcreateDate(comment.getSpot().getCreatedDate())
+                    .author(comment.getUser().getNickname())
+                    .spotImageurl(comment.getSpot().getImageUrls().get(0))
+                    .build();
+            commentsByUser.add(commentDto);
         }
 
-        return commentsByuser;
-
+        return commentsByUser;
     }
 
-    public CommentPaginationResponse getPagedComments(List<CommentGetResponse> commentsByUser, Long pageNum, Long commentsInPage){
-        //commentsByuser 한 객체마다 pagination 해줘서 pagedComments 에 넣어주기
-        List<CommentPaginationResponse> pagedComments = new ArrayList<>();
+    public List<CommentListResponseDto> getPagedComments( int
+            pageNumber
+            , int pageSize) {
 
-        Long totalComments = (long) commentsByUser.size();
-        Long amountInBlock = commentsInPage;
-        Long lastPage = totalComments / amountInBlock; // 전체 페이지 수
-        // 나머지가 0보다 큰 경우에는 몫에 1을 더해주기
-        if (totalComments % amountInBlock > 0) {
-            lastPage++;
+        User user = getCurrentUser();
+        List<Comment> comments = commentRepository.findByUser(user);
+        System.out.println("comments.size() = " + comments.size());
+        List<CommentListResponseDto> pagedResponse = new ArrayList<>();
+
+
+        int start = Math.min(pageNumber * pageSize, comments.size());
+        int end = Math.min((pageNumber + 1) * pageSize, comments.size());
+
+        if (start > end) {
+            start = end;
         }
-        if (pageNum > lastPage || pageNum <= 0) {//요청하는 페이지가 존재하지 않는 경우
-            return null;
-        }
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.setTotalElements(comments.size());
+        pageInfo.setPage(pageNumber + 1);
+        pageInfo.setSize(pageSize);
+        pageInfo.setTotalPages((int) Math.ceil((double) comments.size() / pageSize));
 
-        Long curPageNum = 1L;
+        List<Comment> pagedcomments = comments.subList(start, end);
 
-        for (int i = 0; i < totalComments; i += amountInBlock) {
-            int endIndex = (int) Math.min(i + amountInBlock, commentsByUser.size());
-            List<CommentGetResponse> currentPageComments = commentsByUser.subList(i, endIndex);
-            pagedComments.add(CommentPaginationResponse.of(currentPageComments, totalComments, curPageNum, lastPage, (long) (endIndex-i)));
-            curPageNum++;
-        }
-
-
-        return pagedComments.get((int) (pageNum - 1));
+        return pagedcomments.stream()
+                .map(comment -> CommentListResponseDto.of(comment, pageInfo))
+                .collect(Collectors.toList());
     }
 }

@@ -76,17 +76,18 @@ public class CommentController {
         );
     }
 
-    @GetMapping("/myAllComments/{pageNum}/{commentsInPage}")
+    @GetMapping("/myAllComments")
     @Operation(summary = "자신의 댓글 전체 조회", description = "로그인한 사용자의 댓글을 전체 조회합니다.('페이지 위치:보여지는 댓글 수'형식으로 입력받습니다.)")
-    public HttpResponse<CommentPaginationResponse> allComments(@PathVariable("pageNum")Long pageNum, @PathVariable("commentsInPage")Long commentsInPage){
-        User user = commentService.getCurrentUser();
-        Long userId = user.getId(); //userId 정보
-        //List<SpotGetResponse> allSpots = spotService.getAllSpots(); //모든 spot 정보
-        List<CommentGetResponse> commentsByUser = commentService.getUserCommentsOfAllSpots(userId); //사용자가 쓴 comment만
-        //페이지 네이션 적용
-        CommentPaginationResponse commentPaginationResponses = commentService.getPagedComments(commentsByUser,pageNum, commentsInPage);
+    public HttpResponse<List<CommentListResponseDto>> allComments(@RequestParam(defaultValue = "1") int pageNumber,
+
+                                                               @RequestParam(defaultValue = "10") int pageSize){
+
+        int adjustedPageNumber = pageNumber - 1;
+
+
+        List<CommentListResponseDto> pagedComments = commentService.getPagedComments(adjustedPageNumber, pageSize);
         return  HttpResponse.okBuild(
-                commentPaginationResponses);
+                pagedComments);
     }
 
 
