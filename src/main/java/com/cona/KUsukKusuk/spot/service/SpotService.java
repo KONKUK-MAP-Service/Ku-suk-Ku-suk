@@ -134,9 +134,10 @@ public class SpotService {
 
 
         List<String> imageUrls = spot.getImageUrls();
+
         if (deleteImageindex>=1 && deleteImageindex<=imageUrls.size()) {
-            String deleteimageurl = imageUrls.get(deleteImageindex+1);
-            imageUrls.remove(deleteImageindex+1);
+            String deleteimageurl = imageUrls.get(deleteImageindex-1);
+            imageUrls.remove(deleteImageindex-1);
             //해당 인덱스에 대응하는 이미지 삭제후 다시 저장(영속).
             spot.setImageUrls(imageUrls);
             s3Service.deleteImagebyUrl(user,deleteimageurl);
@@ -193,7 +194,8 @@ public class SpotService {
                 comment.getComment(),
                 comment.getUser().getNickname(),
                 deletable,
-                comment.getCreatedDate()
+                comment.getCreatedDate(),
+                comment.getUser().getProfileimage()
         );
     }
 

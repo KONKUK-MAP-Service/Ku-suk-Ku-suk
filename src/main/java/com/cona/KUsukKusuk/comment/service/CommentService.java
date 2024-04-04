@@ -15,12 +15,14 @@ import com.cona.KUsukKusuk.user.dto.BoomarkLikeResponseDto;
 import com.cona.KUsukKusuk.user.dto.PageInfo;
 import com.cona.KUsukKusuk.user.service.UserService;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CommentService {
     private final CommentRepository commentRepository;
     private final SpotRepository spotRepository;
@@ -91,7 +93,7 @@ public class CommentService {
                     .spotName(comment.getSpot().getSpotName())
                     .spotId(comment.getSpot().getId())
                     .review(comment.getSpot().getReview())
-                    .createDate(comment.getSpot().getCreatedDate())
+                    .CommentcreateDate(comment.getSpot().getCreatedDate())
                     .author(comment.getUser().getNickname())
                     .spotImageurl(comment.getSpot().getImageUrls().get(0))
                     .build();
@@ -107,6 +109,7 @@ public class CommentService {
 
         User user = getCurrentUser();
         List<Comment> comments = commentRepository.findByUser(user);
+        System.out.println("comments.size() = " + comments.size());
         List<CommentListResponseDto> pagedResponse = new ArrayList<>();
 
 

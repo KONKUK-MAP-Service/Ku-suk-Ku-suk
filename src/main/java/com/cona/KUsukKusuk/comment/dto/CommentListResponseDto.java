@@ -11,8 +11,9 @@ import lombok.Builder;
 public record CommentListResponseDto(
         String spotName,
         Long spotId,
+        String usersComment,
         String review,
-        LocalDateTime createDate,
+        LocalDateTime CommentcreateDate,
 
         String author,
 
@@ -28,11 +29,11 @@ public record CommentListResponseDto(
         return CommentListResponseDto.builder()
                 .spotName(comment.getSpot().getSpotName())
                 .spotImageurl(comment.getSpot().getImageUrls().get(0))
-                .createDate(comment.getCreatedDate())
+                .CommentcreateDate(comment.getCreatedDate())
                 .spotId(comment.getId())
                 .review(comment.getSpot().getReview())
                 .author(comment.getUser().getNickname())
-
+                .usersComment(comment.getComment())
                 .totalElements(pageInfo.getTotalElements())
                 .page(pageInfo.getPage())
                 .size(pageInfo.getSize())
