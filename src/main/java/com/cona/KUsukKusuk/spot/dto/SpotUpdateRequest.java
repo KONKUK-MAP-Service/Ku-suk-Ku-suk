@@ -17,7 +17,7 @@ public record SpotUpdateRequest (
 
      String review,
 
-     int deleteImageindex
+     String[] deleteImageUrls
 ){
 
 }

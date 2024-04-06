@@ -47,11 +47,11 @@ spring:
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
+      enable-logging: false
 
 logging:
   level:
-    org.hibernate.SQL: info
+    org.hibernate.SQL: error
 
 cloud:
   aws:
