@@ -147,6 +147,7 @@ public class UserService {
 
         String newPassword = generateNewPassword();
         member.setPassword(bCryptPasswordEncoder.encode(newPassword));
+
         member.setNoCryptpassword(newPassword);
         userRepository.save(member);
 
@@ -177,6 +178,7 @@ public class UserService {
         String storedPassword = userRepository.findByUserId(username)
                 .map(User::getPassword)
                 .orElseThrow(() -> new UserNotFoundException(HttpExceptionCode.USER_NOT_FOUND));
+
 
         if( ! bCryptPasswordEncoder.matches(enteredPassword, storedPassword)){
             throw new PasswordNotMatchException();

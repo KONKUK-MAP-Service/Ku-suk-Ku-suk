@@ -11,7 +11,7 @@ spring:
         show_sql: true
         format_sql: true
     database: mysql
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
   jwt:
