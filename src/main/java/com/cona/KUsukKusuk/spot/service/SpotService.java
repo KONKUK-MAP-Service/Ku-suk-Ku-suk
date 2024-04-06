@@ -130,17 +130,18 @@ public class SpotService {
         if (!spot.getUser().equals(user)) {
             throw new UserNotFoundException(HttpExceptionCode.USER_NOT_MATCH);
         }
-        int deleteImageindex = spotUpdateRequest.deleteImageindex();
-
+        String[] deleteImageUrls = spotUpdateRequest.deleteImageUrls();
 
         List<String> imageUrls = spot.getImageUrls();
 
-        if (deleteImageindex>=1 && deleteImageindex<=imageUrls.size()) {
-            String deleteimageurl = imageUrls.get(deleteImageindex-1);
-            imageUrls.remove(deleteImageindex-1);
-            //해당 인덱스에 대응하는 이미지 삭제후 다시 저장(영속).
-            spot.setImageUrls(imageUrls);
-            s3Service.deleteImagebyUrl(user,deleteimageurl);
+        for (String deleteImageUrl : deleteImageUrls) {
+            if (imageUrls.contains(deleteImageUrl)) {
+                imageUrls.remove(deleteImageUrl);
+
+                spot.setImageUrls(imageUrls);
+                // S3에서 이미지 삭제
+                s3Service.deleteImagebyUrl(user, deleteImageUrl);
+            }
         }
 
         if (!images.get(0).isEmpty()) {
