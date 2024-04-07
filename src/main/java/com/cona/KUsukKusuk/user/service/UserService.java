@@ -29,6 +29,7 @@ import com.cona.KUsukKusuk.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -290,8 +291,8 @@ public class UserService {
         int start = Math.min(pageNumber * pageSize, distinctSpots.size());
         int end = Math.min((pageNumber + 1) * pageSize, distinctSpots.size());
 
-        if (start > end) {
-            start = end;
+        if (start >= distinctSpots.size()) {
+            return Collections.emptyList();
         }
         PageInfo pageInfo = new PageInfo();
         pageInfo.setTotalElements(distinctSpots.size());

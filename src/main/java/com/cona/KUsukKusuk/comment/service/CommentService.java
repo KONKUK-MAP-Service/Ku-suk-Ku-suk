@@ -14,6 +14,7 @@ import com.cona.KUsukKusuk.user.domain.User;
 import com.cona.KUsukKusuk.user.dto.BoomarkLikeResponseDto;
 import com.cona.KUsukKusuk.user.dto.PageInfo;
 import com.cona.KUsukKusuk.user.service.UserService;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -116,8 +117,8 @@ public class CommentService {
         int start = Math.min(pageNumber * pageSize, comments.size());
         int end = Math.min((pageNumber + 1) * pageSize, comments.size());
 
-        if (start > end) {
-            start = end;
+        if (start >= comments.size()) {
+            return Collections.emptyList(); // 페이지 범위를 벗어나면 빈 리스트 반환
         }
         PageInfo pageInfo = new PageInfo();
         pageInfo.setTotalElements(comments.size());
