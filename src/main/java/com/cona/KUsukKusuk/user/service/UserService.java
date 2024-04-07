@@ -267,15 +267,13 @@ public class UserService {
         List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
         List<UserLike> userLikes = userLikeRepository.findByUser(user);
 
-        List<Spot> bookmarkedSpots;
+        List<Spot> bookmarkedSpots = new ArrayList<>();
         List<Spot> likedSpots = new ArrayList<>();
 
         if (bookmarks != null) {
             bookmarkedSpots = bookmarks.stream()
                     .map(Bookmark::getSpot)
                     .collect(Collectors.toList());
-        } else {
-            bookmarkedSpots = new ArrayList<>();
         }
 
         if (userLikes != null) {
@@ -300,14 +298,16 @@ public class UserService {
         pageInfo.setSize(pageSize);
         pageInfo.setTotalPages((int) Math.ceil((double) distinctSpots.size() / pageSize));
 
+        final List<Spot> finalBookmarkedSpots = bookmarkedSpots; // 수정된 부분: final 변수로 선언
+        final List<Spot> finalLikedSpots = likedSpots; // 수정된 부분: final 변수로 선언
+
         List<Spot> pagedDistinctSpots = distinctSpots.subList(start, end);
 
-        List<Spot> finalLikedSpots = likedSpots;
-
         return pagedDistinctSpots.stream()
-                .map(spot -> BoomarkLikeResponseDto.of(spot, bookmarkedSpots.contains(spot), finalLikedSpots.contains(spot), pageInfo))
+                .map(spot -> BoomarkLikeResponseDto.of(spot, finalBookmarkedSpots.contains(spot), finalLikedSpots.contains(spot), pageInfo))
                 .collect(Collectors.toList());
     }
+
 
 
 
