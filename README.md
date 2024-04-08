@@ -10,7 +10,9 @@
 나만의 장소를 공유해 보세요.
 
   💻 건대의 모든 장소 ! 장소공유 서비스, <br>
-  🖋 [KU -SUK KU -SUK]()
+  🖋 [KU -SUK KU -SUK](https://www.kusukmap.com/)
+
+  도메인 : https://www.kusukmap.com/
 
 </div>
 <br>
