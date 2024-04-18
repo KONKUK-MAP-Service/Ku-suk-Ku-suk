@@ -62,21 +62,39 @@
 </tr>
 </table>
 
-###  쿠석쿠석 
+###  💗쿠석쿠석 
 
 건국대학교의 모든 장소를 공유하는 '쿠석쿠석' 서비스입니다.
-### 서버 아키텍쳐 
 
 
-![image](https://github.com/KONKUK-MAP-Service/Ku-suk-Ku-suk/assets/58305106/fc52e744-a83a-446d-b052-04dc14b198ec)
+## ⚙️ KU-suk-KU-suk 프로젝트는 이렇게 배포돼요!
 
-### 사용 기술
-![image](https://github.com/KONKUK-MAP-Service/Ku-suk-Ku-suk/assets/58305106/5eaf1ed6-8c62-47be-b8e7-c6461eacfce0)
+![image](https://github.com/KONKUK-MAP-Service/.github/assets/58305106/7d23c61d-30cc-4563-a037-fcb0c391712f)
 
 
 
 
-## 데이터베이스 모델링
+## 📌서버 아키텍쳐   
+
+
+![image](https://github.com/KONKUK-MAP-Service/Ku-suk-Ku-suk/assets/58305106/fa16090b-ddcc-4837-8516-4ece8a6f9125)
+
+## 🧑‍💻사용기술
+<img src="https://img.shields.io/badge/Java 17-007396?style=flat&logo=java&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white"/> <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=springboot&logoColor=white"/> <img src="https://img.shields.io/badge/Spring MVC-6DB33F?style=flat&logo=spring&logoColor=white"/>  <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=flat&logo=spring&logoColor=white"/> <img src="https://img.shields.io/badge/JPA-orange?style=flat&logo=JPA&logoColor=white"/> <img src="https://img.shields.io/badge/Hibernate-orange?style=flat&logo=Hibernate&logoColor=white"/> <img src="https://img.shields.io/badge/Querydsl-orange?style=flat&logo=querydsl&logoColor=white"/> <img src="https://img.shields.io/badge/Junit5-blue?style=flat&logo=Junit5&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white"/> 
+
+<img src="https://img.shields.io/badge/EC2-FF9900?style=flat&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/RDS-527FFF?style=flat&logo=amazonrds&logoColor=white"/> <img src="https://img.shields.io/badge/ELB-FF9900?style=flat&logo=amazon elb&logoColor=white"/> <img src="https://img.shields.io/badge/Api Gateway-FF9900?style=flat&logo=amazonapigateway&logoColor=white"/> 
+
+<img src="https://img.shields.io/badge/GithubActions-2088FF?style=flat&logo=githubactions&logoColor=white"/> <img src="https://img.shields.io/badge/redis-DC382D?style=flat&logo=redis&logoColor=white"/>
+<img src="https://img.shields.io/badge/Gmail-D14836?style=flat&logo=gmail&logoColor=white"/>
+
+
+
+
+## 📊데이터베이스 모델링
 
 > 개념적 설계 :[https://cream-curler-e66.notion.site/8b6ddedc83b64e759ee18c080b301662?pvs=4](https://www.notion.so/8b6ddedc83b64e759ee18c080b301662?pvs=21)
 >
