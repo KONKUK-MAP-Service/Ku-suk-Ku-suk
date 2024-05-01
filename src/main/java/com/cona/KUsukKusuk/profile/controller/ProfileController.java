@@ -2,6 +2,7 @@ package com.cona.KUsukKusuk.profile.controller;
 
 
 import com.cona.KUsukKusuk.global.response.HttpResponse;
+import com.cona.KUsukKusuk.global.s3.ImageUrlConverter;
 import com.cona.KUsukKusuk.profile.dto.UploadImage;
 import com.cona.KUsukKusuk.profile.exception.ImageUploadException;
 import com.cona.KUsukKusuk.profile.service.ProfileService;
@@ -36,6 +37,8 @@ public class ProfileController {
     public HttpResponse<String> updateProfileImage(UploadImage imageDto) {
         try {
             String imageUrl = profileService.updateProfileImage(imageDto);
+            // S3 URL을 CloudFront URL로 변환
+            String cloudFrontUrl = ImageUrlConverter.convertToCloudFrontUrl(imageUrl);
             return HttpResponse.okBuild(imageUrl);
         } catch (IOException e) {
             throw new ImageUploadException();

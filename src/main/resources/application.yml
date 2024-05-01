@@ -60,6 +60,8 @@ cloud:
       secretKey: ${s3_secretkey}
     s3:
       bucketName: ${s3_bucketname}
+    cloudfront:
+      domainName: ${cloudfront_name}
     region:
       static: ap-northeast-2
     stack:

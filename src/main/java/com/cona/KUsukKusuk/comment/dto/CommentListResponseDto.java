@@ -27,10 +27,11 @@ public record CommentListResponseDto(
         int totalPages
 ) {
 
-    public static CommentListResponseDto of (Comment comment, PageInfo pageInfo){
+    public static CommentListResponseDto of(Comment comment, PageInfo pageInfo) {
+        String spotImageurl = comment.getSpot().getImageUrls().isEmpty() ? "" : comment.getSpot().getImageUrls().get(0);
         return CommentListResponseDto.builder()
                 .spotName(comment.getSpot().getSpotName())
-                .spotImageurl(comment.getSpot().getImageUrls().get(0))
+                .spotImageurl(spotImageurl)
                 .commentId(comment.getId())
                 .CommentcreateDate(comment.getCreatedDate())
                 .spotId(comment.getId())
@@ -43,6 +44,7 @@ public record CommentListResponseDto(
                 .totalPages(pageInfo.getTotalPages())
                 .build();
     }
+
 
 
 }

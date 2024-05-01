@@ -24,9 +24,10 @@ public record BoomarkLikeResponseDto(
         int totalPages
 ) {
     public static BoomarkLikeResponseDto of(Spot spot, Boolean isBookmark, Boolean isLike, PageInfo pageInfo) {
+        String spotImageurl = spot.getImageUrls().isEmpty() ? "" : spot.getImageUrls().get(0);
         return BoomarkLikeResponseDto.builder()
                 .spotName(spot.getSpotName())
-                .spotImageurl(spot.getImageUrls().get(0))
+                .spotImageurl(spotImageurl)
                 .createDate(spot.getCreatedDate())
                 .spotId(spot.getId())
                 .review(spot.getReview())

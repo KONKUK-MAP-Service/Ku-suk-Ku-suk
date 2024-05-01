@@ -1,6 +1,7 @@
 package com.cona.KUsukKusuk.spot.dto;
 
 import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
+import com.cona.KUsukKusuk.global.s3.ImageUrlConverter;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -24,11 +25,13 @@ public record SpotGetResponse(
         LocalDateTime createDate
 ) {
     public static SpotGetResponse of(Spot spot,Boolean isUsersOwnSpot,Boolean isBookmark,Boolean isLike) {
+
+        List<String> cloudFrontImageUrls = ImageUrlConverter.convertToCloudFrontUrls(spot.getImageUrls());
         return SpotGetResponse.builder()
                 .spotId(spot.getId())
                 .isUsersOwnSpot(isUsersOwnSpot)
                 .spotName(spot.getSpotName())
-                .images(spot.getImageUrls())
+                .images(cloudFrontImageUrls)
                 .longtitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())
