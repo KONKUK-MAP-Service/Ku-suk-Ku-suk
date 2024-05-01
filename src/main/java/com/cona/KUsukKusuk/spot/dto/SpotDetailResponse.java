@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.spot.dto;
 
+import com.cona.KUsukKusuk.global.s3.ImageUrlConverter;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,11 +22,14 @@ public record SpotDetailResponse(Long spotId,
                                  String review) {
 
     public static SpotDetailResponse fromSpot(Spot spot,Boolean isBookmark, Boolean isLike) {
+
+        List<String> cloudFrontImageUrls = ImageUrlConverter.convertToCloudFrontUrls(spot.getImageUrls());
+
         return SpotDetailResponse.builder()
                 .spotId(spot.getId())
 
                 .spotName(spot.getSpotName())
-                .images(spot.getImageUrls())
+                .images(cloudFrontImageUrls)
                 .longitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())

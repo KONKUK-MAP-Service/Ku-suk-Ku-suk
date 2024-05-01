@@ -1,5 +1,6 @@
 package com.cona.KUsukKusuk.spot.dto;
 
+import com.cona.KUsukKusuk.global.s3.ImageUrlConverter;
 import com.cona.KUsukKusuk.spot.domain.Spot;
 import java.util.List;
 import lombok.Builder;
@@ -10,10 +11,12 @@ public record SpotUpdatResponse(
 
 ) {
     public static SpotUpdatResponse of(Spot spot){
+        List<String> cloudFrontImageUrls = ImageUrlConverter.convertToCloudFrontUrls(spot.getImageUrls());
+
         return SpotUpdatResponse.builder()
                 .spotid(spot.getId())
                 .spotName(spot.getSpotName())
-                .images(spot.getImageUrls())
+                .images(cloudFrontImageUrls)
                 .longtitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())
