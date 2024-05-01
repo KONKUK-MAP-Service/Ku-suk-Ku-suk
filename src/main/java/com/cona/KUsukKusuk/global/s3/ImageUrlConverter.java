@@ -31,4 +31,14 @@ public class ImageUrlConverter {
                 .map(ImageUrlConverter::convertToCloudFrontUrl)
                 .collect(Collectors.toList());
     }
+
+    public static String convertToS3Url(String imageUrl) {
+        return imageUrl.replace(cloudFrontBaseUrl, s3BaseUrl);
+    }
+
+    public static List<String> convertToS3Urls(List<String> imageUrls) {
+        return imageUrls.stream()
+                .map(ImageUrlConverter::convertToS3Url)
+                .collect(Collectors.toList());
+    }
 }

@@ -4,6 +4,7 @@ import com.cona.KUsukKusuk.bookmark.domain.Bookmark;
 import com.cona.KUsukKusuk.bookmark.repository.BookmarkRepository;
 import com.cona.KUsukKusuk.comment.domain.Comment;
 import com.cona.KUsukKusuk.global.exception.HttpExceptionCode;
+import com.cona.KUsukKusuk.global.s3.ImageUrlConverter;
 import com.cona.KUsukKusuk.global.s3.S3Service;
 import com.cona.KUsukKusuk.like.UserLike;
 import com.cona.KUsukKusuk.like.repository.UserLikeRepository;
@@ -130,17 +131,17 @@ public class SpotService {
         if (!spot.getUser().equals(user)) {
             throw new UserNotFoundException(HttpExceptionCode.USER_NOT_MATCH);
         }
-        String[] deleteImageUrls = spotUpdateRequest.deleteImageUrls();
 
+        String[] deleteImageUrls = spotUpdateRequest.deleteImageUrls();
         List<String> imageUrls = spot.getImageUrls();
 
         for (String deleteImageUrl : deleteImageUrls) {
-            if (imageUrls.contains(deleteImageUrl)) {
-                imageUrls.remove(deleteImageUrl);
-
+            String s3ImageUrl = ImageUrlConverter.convertToS3Url(deleteImageUrl);
+            if (imageUrls.contains(s3ImageUrl)) {
+                imageUrls.remove(s3ImageUrl);
                 spot.setImageUrls(imageUrls);
                 // S3에서 이미지 삭제
-                s3Service.deleteImagebyUrl(user, deleteImageUrl);
+                s3Service.deleteImagebyUrl(user, s3ImageUrl);
             }
         }
 
