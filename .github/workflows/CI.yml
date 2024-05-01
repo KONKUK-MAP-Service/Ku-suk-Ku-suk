@@ -47,6 +47,8 @@ jobs:
           cloud.aws.credentials.accessKey: ${{secrets.S3_ACCESSKEY}}
           cloud.aws.credentials.secretKey: ${{secrets.S3_SECRETKEY}}
           cloud.aws.s3.bucketName: ${{secrets.S3_BUCKETNAME}}
+          cloud.aws.cloudfront.domainName: ${{secrets.CLOUDFRONT_NAME}}
+
 
 
 
