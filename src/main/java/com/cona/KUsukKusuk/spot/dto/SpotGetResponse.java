@@ -26,12 +26,11 @@ public record SpotGetResponse(
 ) {
     public static SpotGetResponse of(Spot spot,Boolean isUsersOwnSpot,Boolean isBookmark,Boolean isLike) {
 
-        List<String> cloudFrontImageUrls = ImageUrlConverter.convertToCloudFrontUrls(spot.getImageUrls());
         return SpotGetResponse.builder()
                 .spotId(spot.getId())
                 .isUsersOwnSpot(isUsersOwnSpot)
                 .spotName(spot.getSpotName())
-                .images(cloudFrontImageUrls)
+                .images(spot.getImageUrls())
                 .longtitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())

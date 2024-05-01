@@ -136,12 +136,12 @@ public class SpotService {
         List<String> imageUrls = spot.getImageUrls();
 
         for (String deleteImageUrl : deleteImageUrls) {
-            String s3ImageUrl = ImageUrlConverter.convertToS3Url(deleteImageUrl);
-            if (imageUrls.contains(s3ImageUrl)) {
-                imageUrls.remove(s3ImageUrl);
+            if (imageUrls.contains(deleteImageUrl)) {
+                imageUrls.remove(deleteImageUrl);
+
                 spot.setImageUrls(imageUrls);
                 // S3에서 이미지 삭제
-                s3Service.deleteImagebyUrl(user, s3ImageUrl);
+                s3Service.deleteImagebyUrl(user, deleteImageUrl);
             }
         }
 

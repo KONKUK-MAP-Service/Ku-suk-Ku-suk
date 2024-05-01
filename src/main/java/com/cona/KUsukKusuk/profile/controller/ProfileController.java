@@ -37,8 +37,6 @@ public class ProfileController {
     public HttpResponse<String> updateProfileImage(UploadImage imageDto) {
         try {
             String imageUrl = profileService.updateProfileImage(imageDto);
-            // S3 URL을 CloudFront URL로 변환
-            String cloudFrontUrl = ImageUrlConverter.convertToCloudFrontUrl(imageUrl);
             return HttpResponse.okBuild(imageUrl);
         } catch (IOException e) {
             throw new ImageUploadException();

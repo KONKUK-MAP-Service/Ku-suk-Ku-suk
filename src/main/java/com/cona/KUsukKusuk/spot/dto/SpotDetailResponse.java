@@ -23,13 +23,12 @@ public record SpotDetailResponse(Long spotId,
 
     public static SpotDetailResponse fromSpot(Spot spot,Boolean isBookmark, Boolean isLike) {
 
-        List<String> cloudFrontImageUrls = ImageUrlConverter.convertToCloudFrontUrls(spot.getImageUrls());
 
         return SpotDetailResponse.builder()
                 .spotId(spot.getId())
 
                 .spotName(spot.getSpotName())
-                .images(cloudFrontImageUrls)
+                .images(spot.getImageUrls())
                 .longitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())

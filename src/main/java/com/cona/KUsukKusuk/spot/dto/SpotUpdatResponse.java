@@ -11,12 +11,11 @@ public record SpotUpdatResponse(
 
 ) {
     public static SpotUpdatResponse of(Spot spot){
-        List<String> cloudFrontImageUrls = ImageUrlConverter.convertToCloudFrontUrls(spot.getImageUrls());
 
         return SpotUpdatResponse.builder()
                 .spotid(spot.getId())
                 .spotName(spot.getSpotName())
-                .images(cloudFrontImageUrls)
+                .images(spot.getImageUrls())
                 .longtitude(spot.getLongitude())
                 .latitude(spot.getLatitude())
                 .review(spot.getReview())
