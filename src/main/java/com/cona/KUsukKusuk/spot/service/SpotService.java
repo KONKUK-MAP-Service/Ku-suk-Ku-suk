@@ -12,6 +12,7 @@ import com.cona.KUsukKusuk.spot.domain.Spot;
 import com.cona.KUsukKusuk.spot.dto.CommentResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
+import com.cona.KUsukKusuk.spot.dto.SpotSearchRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotUpdateRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
 import com.cona.KUsukKusuk.spot.exception.SpotNotFoundException;
@@ -200,11 +201,17 @@ public class SpotService {
                 comment.getUser().getProfileimage()
         );
     }
+    public List<SpotDetailResponse> searchSpots(SpotSearchRequest searchRequest) {
+        List<Spot> spots = spotRepository.findAll();
 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-
-
-
+        return spots.stream()
+                .filter(spot -> spot.getSpotName().contains(searchRequest.searchText())
+                        || spot.getReview().contains(searchRequest.searchText()))
+                .map(spot -> SpotDetailResponse.fromSpot(spot, !username.equals("anonymousUser"), !username.equals("anonymousUser")))
+                .collect(Collectors.toList());
+    }
 
 
 }
