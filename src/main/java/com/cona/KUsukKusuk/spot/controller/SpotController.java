@@ -6,6 +6,7 @@ import com.cona.KUsukKusuk.spot.dto.CommentResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDeleteResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotDetailResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotGetResponse;
+import com.cona.KUsukKusuk.spot.dto.SpotSearchRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotUpdatResponse;
 import com.cona.KUsukKusuk.spot.dto.SpotUpdateRequest;
 import com.cona.KUsukKusuk.spot.dto.SpotUploadRequest;
@@ -91,11 +92,13 @@ public class SpotController {
         return HttpResponse.okBuild(comments);
     }
 
-
-
-
-
-
+    @GetMapping("/search")
+    @Operation(summary = "장소 검색", description = "장소를 검색합니다.")
+    public HttpResponse<List<SpotDetailResponse>> searchSpots(@RequestParam(required = false) String searchText) {
+        SpotSearchRequest searchRequest = new SpotSearchRequest(searchText);
+        List<SpotDetailResponse> searchResults = spotService.searchSpots(searchRequest);
+        return HttpResponse.okBuild(searchResults);
+    }
 
 }
 
