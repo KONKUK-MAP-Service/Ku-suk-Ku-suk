@@ -5,25 +5,25 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class ImageUrlConverter {
 
     private static String s3BaseUrl;
-    private static String cloudFrontBaseUrl;
+    // private static String cloudFrontBaseUrl;
 
     @Value("${cloud.aws.s3.bucketName}")
     public void setS3BaseUrl(String bucket) {
         s3BaseUrl = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/";
     }
 
-    @Value("${cloud.aws.cloudfront.domainName}")
-    public void setCloudFrontBaseUrl(String cloudfront) {
-        cloudFrontBaseUrl = "https://" + cloudfront + "/";
-    }
+    // @Value("${cloud.aws.cloudfront.domainName}")
+    // public void setCloudFrontBaseUrl(String cloudfront) {
+    //     cloudFrontBaseUrl = "https://" + cloudfront + "/";
+    // }
 
     public static String convertToCloudFrontUrl(String imageUrl) {
-        return imageUrl.replace(s3BaseUrl, cloudFrontBaseUrl);
+        // return imageUrl.replace(s3BaseUrl, cloudFrontBaseUrl);
+        return imageUrl; // 임시 처리
     }
 
     public static List<String> convertToCloudFrontUrls(List<String> imageUrls) {
@@ -33,7 +33,8 @@ public class ImageUrlConverter {
     }
 
     public static String convertToS3Url(String imageUrl) {
-        return imageUrl.replace(cloudFrontBaseUrl, s3BaseUrl);
+        // return imageUrl.replace(cloudFrontBaseUrl, s3BaseUrl);
+        return imageUrl; // 임시 처리
     }
 
     public static List<String> convertToS3Urls(List<String> imageUrls) {

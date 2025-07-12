@@ -5,12 +5,12 @@ name: CD
 on:
   push:
     branches:
-      - main # main branch로 push 될 때 실행됩니다.
+      - dev # main branch로 push 될 때 실행됩니다.
       - cicd # cicd branch로 push 될 때도 실행됩니다.
 
 # 해당 yml 내에서 사용할 key - value
 env:
-  S3_BUCKET_NAME: kusuk-bucket
+  S3_BUCKET_NAME: kusuk
   PROJECT_NAME: cicd
 
 jobs:
@@ -45,7 +45,7 @@ jobs:
           cloud.aws.credentials.accessKey: ${{secrets.S3_ACCESSKEY}}
           cloud.aws.credentials.secretKey: ${{secrets.S3_SECRETKEY}}
           cloud.aws.s3.bucketName: ${{secrets.S3_BUCKETNAME}}
-          cloud.aws.cloudfront.domainName: ${{secrets.CLOUDFRONT_NAME}}
+          #cloud.aws.cloudfront.domainName: ${{secrets.CLOUDFRONT_NAME}}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
