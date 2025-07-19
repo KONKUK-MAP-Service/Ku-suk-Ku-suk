@@ -6,20 +6,24 @@ on:
   push:
     branches:
       - dev
-      - devops/#35
-  pull_request:
-    branches:
-      - dev
-      
-#.
+      - 'devops/**' #테스트를 위해 잠시 추가
+
+env:
+  S3_BUCKET_NAME: kusuk
+  PROJECT_NAME: KU-suk-Ku-suk
+
 jobs:
   build:
     name: CI
     runs-on: ubuntu-latest
 
     steps:
+      #workflow 실행전 checkout
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0' #모든 커밋과 브랜치를 가져옴
 
+      # jdk 21버전 설치
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
@@ -48,11 +52,95 @@ jobs:
           #cloud.aws.cloudfront.domainName: ${{secrets.CLOUDFRONT_NAME}}
 
       #gradlew 실행을 위한 권한 추가
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
 
+      # build
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew clean build -x test
         shell: bash
+
+      - name: List contents of build/libs
+        run: |
+          ls -al build/libs/
+
+      # git 사용자 정보 설정
+      - name: set git user identity
+        run: |
+          git config user.name ${{secrets.USERNAME}}
+          git config user.email ${{secrets.USEREMAIL}}
+
+      # upload build artifact
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: build/libs/
+
+      - name: Copy deploy scripts and appspec
+        run: |
+          mkdir -p deploy
+          cp ./scripts/*.sh ./deploy/
+          cp appspec.yml ./deploy/
+          cp build/libs/*.jar ./deploy/
+
+      - name: Grant execute permission for deploy scripts
+        run: chmod +x ./deploy/*.sh
+        shell: bash
+
+      - name: Zip deploy folder
+        run: |
+          cd deploy
+          zip -r ../$GITHUB_SHA.zip .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload zip to S3
+        run: |
+          aws s3 cp $GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip --region ap-northeast-2
+
+      - name: Cleanup old zip files in S3 (keep latest 2)
+        run: |
+          echo "📂 Listing all zip files in s3://$S3_BUCKET_NAME/$PROJECT_NAME/"
+
+          # 전체 zip 목록을 시간순으로 정렬 후 상위 2개 제외한 나머지 삭제
+          files_to_delete=$(aws s3 ls s3://$S3_BUCKET_NAME/$PROJECT_NAME/ --recursive --region ap-northeast-2 | \
+          grep '\.zip$' | \
+          sort -k1,1r -k2,2r | \
+          awk '{print $4}' | \
+          tail -n +3)
+          
+          for file in $files_to_delete; do
+          aws s3 rm s3://$S3_BUCKET_NAME/$file --region ap-northeast-2
+          done
+      
+
+      # origin dev로 머지
+      #- name: merge to dev branch
+      #  if: ${{ success() }}
+      #  #build 성공시 아래 실행
+      #  run: |
+      #    git checkout dev
+      #    git merge --no-ff "${GITHUB_REF#refs/heads/}" || echo "충돌 발생"
+      #    git push origin dev로
+
+      # origin dev로 pull request 생성
+      #- name: Create Pull Request to dev
+      #  uses: peter-evans/create-pull-request@v5
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
+      #    base: dev # 머지 대상 (ex: dev 브랜치로 PR 생성)
+      #    branch: ${{ github.ref_name }} # 현재 브랜치에서
+      #    title: '[chore]: 자동 PR ${{ github.ref_name }} → dev'
+      #    body: |
+      #      이 PR은 CI 워크플로우에 의해 자동 생성되었습니다.
+      #      ✅모든 CI step들을 완료하여 자동으로 upstream dev에 머지되었음을 증명합니다.
+
+
+      #      From 브랜치: `${{ github.ref_name }}`

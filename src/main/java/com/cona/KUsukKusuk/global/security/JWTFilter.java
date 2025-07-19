@@ -29,13 +29,18 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization= request.getHeader("Authorization");
 
         //Authorization 이 없어도 접근 가능한 api일 경우 통과
-        if (authorization == null) {
+        String requestURI = request.getRequestURI();
+        if (requestURI.equals("/deploytest/health") || requestURI.equals("/users/join") /* 등등 */) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        /*if (authorization == null) {
 
             filterChain.doFilter(request, response);
 
 
             return;
-        }
+        }*/
         try {
             jwtUtil.validateToken(request);
         } catch (JwtException e) {

@@ -83,6 +83,7 @@ public class SecurityConfig {
                         .requestMatchers("/spot/**").permitAll()
                         .requestMatchers("/users/find-password","/bookmark/add","/bookmark/delete").permitAll()
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/deploytest/health").permitAll()
                         //스웨거 접근권한 허용
                         .anyRequest().authenticated());
 
